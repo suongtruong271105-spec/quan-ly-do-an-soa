@@ -136,7 +136,7 @@
                     <a class="nav-link active" href="/dashboard"><i class="bi bi-speedometer2 me-1"></i> Dashboard</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/sinh-vien"><i class="bi bi-person-lines-fill me-1"></i> Quản lý Sinh Viên</a>
+                    <a class="nav-link" href="/sinhvien"><i class="bi bi-person-lines-fill me-1"></i> Quản lý Sinh Viên</a>
                 </li>
                 <li class="nav-item">
                     <a class="nav-link" href="/de-tai"><i class="bi bi-journal-text me-1"></i> Quản lý Đề Tài</a>
