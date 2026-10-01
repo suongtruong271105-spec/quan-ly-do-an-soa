@@ -1,0 +1,127 @@
+:root {
+    --bg-main: #f3f4f6;
+    --blue-dark: #0f172a;
+    --blue-navy: #1e3a8a;
+}
+
+body {
+    background-color: var(--bg-main);
+    color: #334155;
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+}
+
+/* Navbar Tối màu chuyên nghiệp */
+.navbar-custom {
+    background-color: var(--blue-dark);
+    border-bottom: 1px solid rgba(255, 255, 255, 0.05);
+    padding: 0.8rem 0;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.navbar-custom .nav-link {
+    color: #94a3b8;
+    font-weight: 500;
+    padding: 0.5rem 1.2rem;
+    margin-left: 0.5rem;
+    border-radius: 6px;
+    transition: 0.3s;
+}
+
+.navbar-custom .nav-link:hover,
+.navbar-custom .nav-link.active {
+    color: white;
+    background-color: rgba(255, 255, 255, 0.1);
+}
+
+/* Header xanh trầm */
+.header-section {
+    background: linear-gradient(135deg, var(--blue-dark) 0%, var(--blue-navy) 100%);
+    color: white;
+    padding: 2.5rem 0 4.5rem 0;
+    border-bottom: 4px solid #3b82f6;
+}
+
+.dashboard-content {
+    margin-top: -3rem;
+    position: relative;
+    z-index: 10;
+}
+
+/* Card Form Component */
+.form-card {
+    background: white;
+    border-radius: 12px;
+    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.05);
+    border: 1px solid #e2e8f0;
+    overflow: hidden;
+    height: 100%;
+}
+
+.form-card-header {
+    padding: 1.25rem 1.5rem;
+    border-bottom: 1px solid #e2e8f0;
+    background-color: #ffffff;
+    display: flex;
+    align-items: center;
+}
+
+.form-card-body {
+    padding: 1.5rem;
+}
+
+.form-input-custom {
+    width: 100%;
+    padding: 0.6rem 0.8rem;
+    border: 1px solid #cbd5e1;
+    border-radius: 8px;
+    font-size: 0.9rem;
+    outline: none;
+    transition: border-color 0.2s, box-shadow 0.2s;
+}
+
+.form-input-custom:focus {
+    border-color: #2563eb;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.15);
+}
+
+/* Buttons đồng bộ theme */
+.btn-primary-custom {
+    background-color: #2563eb;
+    color: white;
+    border: none;
+    padding: 0.65rem 1rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: background-color 0.2s;
+}
+
+.btn-primary-custom:hover {
+    background-color: #1d4ed8;
+    color: white;
+}
+
+.btn-warning-custom {
+    background-color: #d97706;
+    color: white;
+    border: none;
+    padding: 0.65rem 1rem;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 0.9rem;
+    transition: background-color 0.2s;
+}
+
+.btn-warning-custom:hover {
+    background-color: #b45309;
+    color: white;
+}
+
+.text-success-custom {
+    color: #34d399;
+}
+
+.text-error-custom {
+    color: #f87171;
+}
