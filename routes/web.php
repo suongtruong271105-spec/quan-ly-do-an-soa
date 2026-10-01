@@ -15,3 +15,8 @@ Route::get('/dashboard', [DashboardController::class, 'index'])->name('dashboard
 Route::get('/sinhvien', function () {
     return view('sinhvien');
 });
+
+
+Route::get('/dang-ky', function () {
+    return view('dangky');
+});
