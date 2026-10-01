@@ -51,6 +51,13 @@
 
 <!-- Main Content -->
 <div class="container dashboard-content mb-5">
+    
+    <!-- Thông báo Trạng thái (Alert UI) -->
+    <div id="alertBox" class="alert alert-dismissible fade show d-none mb-4 shadow-sm" role="alert">
+        <span id="alertMessage"></span>
+        <button type="button" class="btn-close" onclick="hideAlert()"></button>
+    </div>
+
     <div class="row g-4">
         <!-- Form 1: Đăng Ký Đề Tài -->
         <div class="col-md-6">
@@ -62,12 +69,16 @@
                 <div class="form-card-body">
                     <form id="formDangKy">
                         <div class="mb-3">
-                            <label for="dk_sinhvien_id" class="form-label text-secondary small fw-semibold">ID Sinh viên</label>
-                            <input type="number" id="dk_sinhvien_id" class="form-input-custom" placeholder="Nhập ID sinh viên (VD: 1)" required>
+                            <label for="dk_sinhvien_id" class="form-label text-secondary small fw-semibold">Sinh Viên</label>
+                            <select id="dk_sinhvien_id" class="form-select form-input-custom" required>
+                                <option value="">-- Đang tải danh sách sinh viên... --</option>
+                            </select>
                         </div>
                         <div class="mb-4">
-                            <label for="dk_detai_id" class="form-label text-secondary small fw-semibold">ID Đề tài</label>
-                            <input type="number" id="dk_detai_id" class="form-input-custom" placeholder="Nhập ID đề tài (VD: 1)" required>
+                            <label for="dk_detai_id" class="form-label text-secondary small fw-semibold">Đề Tài Đồ Án</label>
+                            <select id="dk_detai_id" class="form-select form-input-custom" required>
+                                <option value="">-- Đang tải danh sách đề tài... --</option>
+                            </select>
                         </div>
                         <button type="submit" id="btnDangKy" class="btn btn-primary-custom w-100">
                             <i class="bi bi-check-circle me-1"></i> Xác Nhận Đăng Ký
@@ -87,11 +98,13 @@
                 <div class="form-card-body">
                     <form id="formNhapDiem">
                         <div class="mb-3">
-                            <label for="nd_dang_ky_id" class="form-label text-secondary small fw-semibold">ID Đăng ký (dang_ky_id)</label>
-                            <input type="number" id="nd_dang_ky_id" class="form-input-custom" placeholder="Nhập ID lượt đăng ký (VD: 1)" required>
+                            <label for="nd_dang_ky_id" class="form-label text-secondary small fw-semibold">Sinh Viên & Đề tài</label>
+                            <select id="nd_dang_ky_id" class="form-select form-input-custom" required>
+                                <option value="">-- Đang tải danh sách đăng ký... --</option>
+                            </select>
                         </div>
                         <div class="mb-4">
-                            <label for="nd_diem" class="form-label text-secondary small fw-semibold">Điểm số (Thang 10)</label>
+                            <label for="nd_diem" class="form-label text-secondary small fw-semibold">Điểm Số (Thang 10)</label>
                             <input type="number" step="0.1" min="0" max="10" id="nd_diem" class="form-input-custom" placeholder="VD: 8.5" required>
                         </div>
                         <button type="submit" id="btnNhapDiem" class="btn btn-warning-custom w-100">
@@ -100,17 +113,6 @@
                     </form>
                 </div>
             </div>
-        </div>
-    </div>
-
-    <!-- Console Log Trả Về Từ API để Test-->
-    <div class="console-card">
-        <div class="console-header">
-            <span class="console-title"><i class="bi bi-terminal me-1"></i> Response Console (API Return Value)</span>
-            <button onclick="clearLog()" class="btn btn-sm btn-outline-light py-0 px-2" style="font-size: 0.75rem;">Clear</button>
-        </div>
-        <div class="console-body">
-            <pre id="outputLog" class="console-output text-success-custom">Kết quả gọi API sẽ hiển thị ở đây...</pre>
         </div>
     </div>
 </div>

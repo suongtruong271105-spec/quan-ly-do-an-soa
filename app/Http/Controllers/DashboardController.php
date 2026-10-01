@@ -16,11 +16,14 @@ class DashboardController extends Controller
                 ->join('sinhvien', 'dangky.sinhvien_id', '=', 'sinhvien.id')
                 ->join('detai', 'dangky.detai_id', '=', 'detai.id')
                 ->select(
+                    'sinhvien.id as sinhvien_id',       // <-- BỔ SUNG: ID sinh viên (Thư)
                     'sinhvien.ma_sv',
                     'sinhvien.ho_ten as ten_sinh_vien',
                     'sinhvien.lop',
+                    'detai.id as detai_id',             // <-- BỔ SUNG: ID đề tài (Thư)
                     'detai.ten_dt as ten_de_tai',
                     'detai.giang_vien_huong_dan',
+                    'dangky.id as dang_ky_id',         // <-- BỔ SUNG: ID của lượt đăng ký để chấm điểm (Thư)
                     'dangky.created_at as ngay_dang_ky',
                     'dangky.diem'
                 )
@@ -41,7 +44,6 @@ class DashboardController extends Controller
                 'summary' => $thongKe,
                 'data'    => $data
             ], 200);
-
         } catch (\Exception $e) {
             return response()->json([
                 'status'  => 'error',

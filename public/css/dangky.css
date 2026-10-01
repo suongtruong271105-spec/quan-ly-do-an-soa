@@ -2,7 +2,6 @@
     --bg-main: #f3f4f6;
     --blue-dark: #0f172a;
     --blue-navy: #1e3a8a;
-    --text-muted: #64748b;
 }
 
 body {
@@ -117,46 +116,6 @@ body {
 .btn-warning-custom:hover {
     background-color: #b45309;
     color: white;
-}
-
-/* Response Console */
-.console-card {
-    background-color: #0f172a;
-    color: #f8fafc;
-    border-radius: 12px;
-    border: 1px solid #1e293b;
-    box-shadow: 0 4px 6px -1px rgba(0, 0, 0, 0.08);
-    overflow: hidden;
-    margin-top: 1.5rem;
-}
-
-.console-header {
-    padding: 0.75rem 1.25rem;
-    background-color: #1e293b;
-    display: flex;
-    justify-content: space-between;
-    align-items: center;
-    border-bottom: 1px solid #334155;
-}
-
-.console-title {
-    font-size: 0.75rem;
-    text-transform: uppercase;
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-    color: #94a3b8;
-    font-weight: 600;
-}
-
-.console-body {
-    padding: 1rem 1.25rem;
-}
-
-.console-output {
-    font-family: ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, monospace;
-    font-size: 0.85rem;
-    overflow-x: auto;
-    margin: 0;
-    white-space: pre-wrap;
 }
 
 .text-success-custom {
