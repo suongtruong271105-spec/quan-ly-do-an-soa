@@ -16,11 +16,17 @@ class SinhVienFactory extends Factory
      * @return array<string, mixed>
      */
     public function definition(): array
-    {
-       return [
-            'ma_sv' => $this->faker->unique()->numerify('SV####'), // Tạo chuỗi dạng SV0123
-            'ho_ten' => $this->faker->name(), // Tên người ngẫu nhiên
-            'lop' => $this->faker->randomElement(['KTPM1', 'KTPM2', 'CNTT1', 'HTTT']), // Chọn ngẫu nhiên 1 lớp
-        ];
-    }
+{
+    $danhSachTenSV = [
+        'Nguyễn Văn An', 'Trần Thị Bình', 'Lê Hoàng Cường', 'Phạm Thị Dung',
+        'Hoàng Văn Bảo', 'Vũ Thị Phương', 'Đặng Tuấn Hải', 'Bùi Thị Hoa',
+        'Đỗ Minh Trí', 'Ngô Ngọc Lan', 'Dương Văn Kiên', 'Lý Thị Mai'
+    ];
+
+    return [
+        'ma_sv' => $this->faker->unique()->numerify('SV####'),
+        'ho_ten' => $this->faker->randomElement($danhSachTenSV),
+        'lop' => $this->faker->randomElement(['KTPM1', 'KTPM2', 'CNTT1', 'HTTT']),
+    ];
+}
 }
