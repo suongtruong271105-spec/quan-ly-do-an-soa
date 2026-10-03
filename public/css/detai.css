@@ -1,233 +1,303 @@
-/* --- Google Fonts & Variables --- */
+
 @import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
 
 :root {
-    --bg-main: #f3f4f6;
-    --blue-dark: #0f172a; 
-    --blue-navy: #1e3a8a;
-    --blue-primary: #3b82f6;
-    --text-main: #334155;
+    --bg-main: #f8fafc;
+    --navy-header: #0b132b;
+    --navy-hero: linear-gradient(135deg, #0b132b 0%, #1c2541 50%, #1e3a8a 100%);
+    --card-bg: #ffffff;
+    --primary-blue: #2563eb;
+    --primary-blue-hover: #1d4ed8;
+    --text-dark: #1e293b;
     --text-muted: #64748b;
     --border-color: #e2e8f0;
-    --white: #ffffff;
-    --danger: #ef4444;
+    --radius: 12px;
+    --shadow: 0 4px 15px -2px rgba(0, 0, 0, 0.05), 0 2px 6px -2px rgba(0, 0, 0, 0.03);
 }
 
-/* --- Base Styles --- */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+    font-family: 'Inter', system-ui, -apple-system, sans-serif;
+}
+
 body {
     background-color: var(--bg-main);
-    color: var(--text-main);
-    font-family: 'Inter', sans-serif;
-    -webkit-font-smoothing: antialiased;
-    margin: 0;
-    padding: 2rem 1rem;
-    display: flex;
-    justify-content: center;
+    color: var(--text-dark);
+    line-height: 1.5;
 }
 
-/* --- Nút Quay Lại --- */
-.btn-back {
-    background-color: transparent;
-    color: var(--blue-navy, #1e3a8a);
-    border: 1px solid var(--blue-navy, #1e3a8a);
-    padding: 0.5rem 1rem;
-    border-radius: 6px;
-    cursor: pointer;
-    font-family: 'Inter', sans-serif;
-    font-weight: 600;
-    font-size: 0.9rem;
-    margin-bottom: 1rem;
-    margin-top: 1rem;
+/* --- 1. NAVBAR (THANH ĐIỀU HƯỚNG TỐI MÀU) --- */
+.navbar {
+    background-color: var(--navy-header);
+    height: 64px;
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    padding: 0 32px;
+    color: #ffffff;
+    border-bottom: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.navbar-brand {
+    display: flex;
+    align-items: center;
+    gap: 10px;
+    font-weight: 700;
+    font-size: 18px;
+    letter-spacing: 0.5px;
+}
+
+.navbar-brand svg {
+    color: #60a5fa;
+}
+
+.nav-links {
+    display: flex;
+    gap: 8px;
+    list-style: none;
+}
+
+.nav-links a {
+    color: #cbd5e1;
+    text-decoration: none;
+    padding: 8px 16px;
+    border-radius: 8px;
+    font-size: 14px;
+    font-weight: 500;
     transition: all 0.2s ease;
+    display: flex;
+    align-items: center;
+    gap: 6px;
+}
+
+.nav-links a:hover {
+    color: #ffffff;
+    background-color: rgba(255, 255, 255, 0.08);
+}
+
+.nav-links a.active {
+    background-color: rgba(255, 255, 255, 0.15);
+    color: #ffffff;
+}
+
+/* --- 2. HERO BANNER --- */
+.hero-banner {
+    background: var(--navy-hero);
+    color: #ffffff;
+    padding: 32px;
+    padding-bottom: 60px;
+}
+
+.hero-content {
+    max-width: 1200px;
+    margin: 0 auto;
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+}
+
+.hero-title h1 {
+    font-size: 26px;
+    font-weight: 700;
+    margin-bottom: 6px;
+}
+
+.hero-title p {
+    color: #94a3b8;
+    font-size: 14px;
+}
+
+.btn-back {
+    background: rgba(255, 255, 255, 0.12);
+    color: #ffffff;
+    border: 1px solid rgba(255, 255, 255, 0.2);
+    padding: 8px 16px;
+    border-radius: 8px;
+    cursor: pointer;
+    font-size: 13px;
+    font-weight: 500;
+    transition: background 0.2s;
 }
 
 .btn-back:hover {
-    background-color: var(--blue-navy, #1e3a8a);
-    color: #ffffff;
-    transform: translateX(-3px);
+    background: rgba(255, 255, 255, 0.25);
 }
 
-.container {
-    width: 100%;
-    max-width: 1000px;
+/* --- 3. CONTAINER CHÍNH --- */
+.main-container {
+    max-width: 1200px;
+    margin: -36px auto 40px auto;
+    padding: 0 16px;
 }
 
-/* --- Header / Title --- */
-h1 {
-    font-size: 1.5rem;
+/* --- 4. CARD BỌC PHẦN FORM VÀ BẢNG --- */
+.card {
+    background-color: var(--card-bg);
+    border-radius: var(--radius);
+    box-shadow: var(--shadow);
+    border: 1px solid var(--border-color);
+    padding: 24px;
+    margin-bottom: 24px;
+}
+
+.card-title {
+    font-size: 15px;
     font-weight: 700;
-    color: var(--blue-dark);
-    margin-bottom: 1.5rem;
+    color: var(--text-dark);
+    margin-bottom: 18px;
+    display: flex;
+    align-items: center;
+    gap: 8px;
     text-transform: uppercase;
-    letter-spacing: 0.5px;
-    border-left: 4px solid var(--blue-primary);
-    padding-left: 1rem;
+    letter-spacing: 0.3px;
 }
 
-/* --- Form Container --- */
-.form-container {
-    background: var(--white);
+/* --- 5. FORM NHẬP DỮ LIỆU --- */
+.input-group-wrapper {
+    display: grid;
+    grid-template-columns: 1fr 2fr 1.5fr;
+    gap: 16px;
+    margin-bottom: 18px;
+}
+
+.input-group-wrapper input {
+    width: 100%;
+    padding: 10px 14px;
     border: 1px solid var(--border-color);
-    border-radius: 12px;
-    padding: 1.5rem;
-    margin-bottom: 2rem;
-    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
-}
-
-.form-container h3 {
-    font-size: 1.1rem;
-    font-weight: 600;
-    color: var(--blue-navy);
-    margin-top: 0;
-    margin-bottom: 1rem;
-    border-bottom: 1px solid var(--border-color);
-    padding-bottom: 0.75rem;
-}
-
-/* Inputs */
-input[type="text"] {
-    width: calc(33.33% - 10px); /* Chia làm 3 cột trên cùng 1 hàng */
-    padding: 0.6rem 1rem;
-    margin-right: 10px;
-    margin-bottom: 1rem;
-    border: 1px solid var(--border-color);
-    border-radius: 6px;
-    font-family: 'Inter', sans-serif;
-    font-size: 0.95rem;
-    color: var(--text-main);
-    background-color: #f8fafc;
-    transition: all 0.2s ease;
-    box-sizing: border-box;
-}
-
-input[type="text"]:focus {
+    border-radius: 8px;
+    font-size: 14px;
+    color: var(--text-dark);
     outline: none;
-    border-color: var(--blue-primary);
-    background-color: var(--white);
-    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+    transition: border-color 0.2s, box-shadow 0.2s;
+    background-color: #f8fafc;
 }
 
-/* Buttons */
-button {
-    font-family: 'Inter', sans-serif;
-    font-weight: 500;
-    font-size: 0.9rem;
-    padding: 0.6rem 1.25rem;
-    border-radius: 6px;
+.input-group-wrapper input:focus {
+    border-color: var(--primary-blue);
+    background-color: #ffffff;
+    box-shadow: 0 0 0 3px rgba(37, 99, 235, 0.12);
+}
+
+.button-group {
+    display: flex;
+    gap: 10px;
+}
+
+#btn-save {
+    background-color: var(--primary-blue);
+    color: #ffffff;
     border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 14px;
     cursor: pointer;
-    transition: all 0.2s ease;
-    margin-right: 10px;
+    transition: background 0.2s;
 }
 
-/* Nút Lưu Đề Tài (Tương đương nút lưu sinh viên) */
-button[onclick="saveDeTai()"], #btn-save {
-    background-color: var(--blue-navy);
-    color: var(--white);
-    box-shadow: 0 2px 4px rgba(30, 58, 138, 0.2);
+#btn-save:hover {
+    background-color: var(--primary-blue-hover);
 }
 
-button[onclick="saveDeTai()"]:hover, #btn-save:hover {
-    background-color: var(--blue-dark);
-    transform: translateY(-1px);
-}
-
-/* Nút Hủy */
-button[onclick="resetForm()"], #btn-cancel {
+#btn-cancel {
     background-color: #e2e8f0;
-    color: var(--text-main);
+    color: var(--text-dark);
+    border: none;
+    padding: 10px 20px;
+    border-radius: 8px;
+    font-weight: 600;
+    font-size: 14px;
+    cursor: pointer;
 }
 
-button[onclick="resetForm()"]:hover, #btn-cancel:hover {
+#btn-cancel:hover {
     background-color: #cbd5e1;
 }
 
-/* Responsive Form for smaller screens */
-@media (max-width: 768px) {
-    input[type="text"] {
-        width: 100%;
-        margin-right: 0;
-    }
-}
-
-/* --- Table Container --- */
+/* --- 6. BẢNG DỮ LIỆU --- */
 table {
     width: 100%;
     border-collapse: collapse;
-    background: var(--white);
-    border-radius: 12px;
-    overflow: hidden; 
-    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
-    border: 1px solid var(--border-color);
+    margin-top: 8px;
 }
 
-thead {
+table thead th {
     background-color: #f8fafc;
+    color: var(--text-muted);
+    font-size: 12px;
+    font-weight: 700;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    padding: 12px 16px;
+    text-align: left;
     border-bottom: 1px solid var(--border-color);
 }
 
-th {
-    text-align: left;
-    padding: 1rem 1.5rem;
-    font-weight: 600;
-    color: var(--text-muted);
-    font-size: 0.85rem;
-    text-transform: uppercase;
-}
-
-td {
-    padding: 1rem 1.5rem;
+table tbody tr {
+    transition: background-color 0.15s;
     border-bottom: 1px solid #f1f5f9;
-    color: var(--text-main);
-    vertical-align: middle;
 }
 
-tbody tr {
-    transition: background-color 0.2s ease;
-}
-
-tbody tr:hover {
+table tbody tr:hover {
     background-color: #f8fafc;
 }
 
-tbody tr:last-child td {
-    border-bottom: none;
+table tbody td {
+    padding: 14px 16px;
+    font-size: 14px;
+    color: #334155;
+    vertical-align: middle;
 }
 
-/* Nổi bật text trong bảng */
-td:nth-child(2) { /* Cột Mã Đề Tài */
-    font-family: monospace;
-    color: var(--text-muted);
-    font-weight: 600;
-}
-
-td:nth-child(3) { /* Cột Tên Đề Tài */
-    font-weight: 600;
-    color: var(--blue-dark);
-}
-
-td:nth-child(4) { /* Cột Giảng Viên Hướng Dẫn */
-    font-size: 0.9rem;
-}
-
-/* Thao tác (Buttons in Table) */
-td button {
-    padding: 0.4rem 0.8rem;
-    font-size: 0.85rem;
-    margin-right: 5px;
-    border-radius: 4px;
-}
-
-td button:first-child { /* Nút Sửa */
+/* Thao tác nút trong bảng */
+.btn-edit {
     background-color: #eff6ff;
-    color: var(--blue-primary);
+    color: #2563eb;
     border: 1px solid #bfdbfe;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    margin-right: 6px;
+    transition: all 0.15s;
 }
-td button:first-child:hover { background-color: #dbeafe; }
 
-td button:last-child { /* Nút Xóa */
-    background-color: #fef2f2;
-    color: var(--danger);
-    border: 1px solid #fecaca;
+.btn-edit:hover {
+    background-color: #2563eb;
+    color: #ffffff;
 }
-td button:last-child:hover { background-color: #fee2e2; }
+
+.btn-delete {
+    background-color: #fef2f2;
+    color: #dc2626;
+    border: 1px solid #fecaca;
+    padding: 6px 12px;
+    border-radius: 6px;
+    font-size: 13px;
+    font-weight: 500;
+    cursor: pointer;
+    transition: all 0.15s;
+}
+
+.btn-delete:hover {
+    background-color: #dc2626;
+    color: #ffffff;
+}
+
+/* Responsive */
+@media (max-width: 768px) {
+    .input-group-wrapper {
+        grid-template-columns: 1fr;
+    }
+    .hero-content {
+        flex-direction: column;
+        align-items: flex-start;
+        gap: 16px;
+    }
+    .navbar {
+        padding: 0 16px;
+    }
+}

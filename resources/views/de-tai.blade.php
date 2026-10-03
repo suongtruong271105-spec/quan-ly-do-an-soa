@@ -2,25 +2,52 @@
 <html lang="vi">
 <head>
     <meta charset="UTF-8">
-    <title>Quản lý Đề Tài</title>
-    <!-- File CSS riêng của bạn -->
-    <link href="detai.css" rel="stylesheet">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Quản lý Đề Tài - SOA_PROJECT</title>
+    <!-- File CSS -->
+    <link href="{{ asset('css/detai.css') }}" rel="stylesheet">
 </head>
 <body>
-    <div class="container">
-        <!-- Nút Quay lại (nếu cần điều hướng) -->
-        <!-- <button class="btn-back" onclick="window.history.back()">← Quay lại</button> -->
 
-        <h1>Quản lý Danh Sách Đề Tài</h1>
+    <!-- 1. Thanh điều hướng Top Navbar -->
+    <nav class="navbar">
+        <div class="navbar-brand">
+            <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
+                <path d="M4 6h16M4 12h16M4 18h16"></path>
+            </svg>
+            <span>SOA_PROJECT</span>
+        </div>
+        <ul class="nav-links">
+            <li><a href="/dashboard"><span>⏱</span> Dashboard</a></li>
+            <li><a href="/sinh-vien"><span>👤</span> Quản lý Sinh Viên</a></li>
+            <li><a href="/de-tai" class="active"><span>📑</span> Quản lý Đề Tài</a></li>
+            <li><a href="/dang-ky"><span>☑</span> Đăng Ký & Chấm Điểm</a></li>
+        </ul>
+    </nav>
 
-        <!-- Form Thêm / Sửa Đề Tài -->
-        <div class="form-container">
-            <h3 id="form-title">Thêm mới Đề Tài</h3>
+    <!-- 2. Hero Banner Header -->
+    <header class="hero-banner">
+        <div class="hero-content">
+            <div class="hero-title">
+                <h1>Quản Lý Danh Sách Đề Tài</h1>
+                <p>Thêm mới, cập nhật thông tin và quản lý danh sách đề tài đồ án</p>
+            </div>
+            <button class="btn-back" onclick="window.history.back()">← Quay lại</button>
+        </div>
+    </header>
+
+    <!-- 3. Nội dung chính -->
+    <main class="main-container">
+        <!-- Form Thêm / Sửa -->
+        <div class="card">
+            <div class="card-title" id="form-title">
+                <span>➕</span> Thêm mới Đề Tài
+            </div>
             <input type="hidden" id="de-tai-id">
             
             <div class="input-group-wrapper">
-                <input type="text" id="ma_dt" placeholder="Mã Đề Tài">
-                <input type="text" id="ten_dt" placeholder="Tên Đề Tài">
+                <input type="text" id="ma_dt" placeholder="Mã Đề Tài (VD: DT01)">
+                <input type="text" id="ten_dt" placeholder="Tên Đề Tài đồ án...">
                 <input type="text" id="giang_vien_hd" placeholder="Giảng Viên Hướng Dẫn">
             </div>
 
@@ -31,22 +58,28 @@
         </div>
 
         <!-- Bảng hiển thị danh sách -->
-        <table>
-            <thead>
-                <tr>
-                    <th>ID</th>
-                    <th>Mã Đề Tài</th>
-                    <th>Tên Đề Tài</th>
-                    <th>Giảng Viên Hướng Dẫn</th>
-                    <th style="text-align: right;">Thao tác</th>
-                </tr>
-            </thead>
-            <tbody id="table-body">
-                <!-- Dữ liệu được load bằng JavaScript -->
-            </tbody>
-        </table>
-    </div>
+        <div class="card">
+            <div class="card-title">
+                <span>📊</span> DANH SÁCH ĐỀ TÀI CÓ TRÊN HỆ THỐNG
+            </div>
+            <table>
+                <thead>
+                    <tr>
+                        <th style="width: 80px;">ID</th>
+                        <th style="width: 140px;">Mã Đề Tài</th>
+                        <th>Tên Đề Tài</th>
+                        <th>Giảng Viên HD</th>
+                        <th style="text-align: right; width: 160px;">Thao tác</th>
+                    </tr>
+                </thead>
+                <tbody id="table-body">
+                    <!-- Dữ liệu load qua JS -->
+                </tbody>
+            </table>
+        </div>
+    </main>
 
+    <!-- 4. JavaScript -->
     <script>
         const API_URL = '/api/de-tai';
 
@@ -56,20 +89,25 @@
                 const res = await fetch(API_URL);
                 const result = await res.json();
                 let rows = '';
-                result.data.forEach(item => {
-                    rows += `
-                        <tr>
-                            <td>${item.id}</td>
-                            <td><strong>${item.ma_dt}</strong></td>
-                            <td>${item.ten_dt}</td>
-                            <td>${item.giang_vien_hd || ''}</td>
-                            <td style="text-align: right;">
-                                <button onclick="editDeTai(${item.id}, '${item.ma_dt}', '${item.ten_dt}', '${item.giang_vien_hd || ''}')">Sửa</button>
-                                <button onclick="deleteDeTai(${item.id})">Xóa</button>
-                            </td>
-                        </tr>
-                    `;
-                });
+                
+                if (result.data && result.data.length > 0) {
+                    result.data.forEach(item => {
+                        rows += `
+                            <tr>
+                                <td>${item.id}</td>
+                                <td><strong style="color: #2563eb;">${item.ma_dt}</strong></td>
+                                <td><strong>${item.ten_dt}</strong></td>
+                                <td>${item.giang_vien_huong_dan || '---'}</td>
+                                <td style="text-align: right;">
+                                    <button class="btn-edit" onclick="editDeTai(${item.id}, '${item.ma_dt}', '${item.ten_dt}', '${item.giang_vien_huong_dan || ''}')">Sửa</button>
+                                    <button class="btn-delete" onclick="deleteDeTai(${item.id})">Xóa</button>
+                                </td>
+                            </tr>
+                        `;
+                    });
+                } else {
+                    rows = `<tr><td colspan="5" style="text-align: center; color: #94a3b8; padding: 30px;">Chưa có dữ liệu đề tài nào.</td></tr>`;
+                }
                 document.getElementById('table-body').innerHTML = rows;
             } catch (error) {
                 console.error('Lỗi tải dữ liệu:', error);
@@ -82,7 +120,7 @@
             const data = {
                 ma_dt: document.getElementById('ma_dt').value,
                 ten_dt: document.getElementById('ten_dt').value,
-                giang_vien_hd: document.getElementById('giang_vien_hd').value
+                giang_vien_huong_dan: document.getElementById('giang_vien_hd').value 
             };
 
             let url = API_URL;
@@ -101,7 +139,7 @@
 
             const result = await res.json();
             if (res.ok) {
-                alert(result.message);
+                alert(result.message || 'Lưu thành công!');
                 resetForm();
                 fetchDeTai();
             } else {
@@ -110,12 +148,12 @@
         }
 
         // 3. Đưa dữ liệu lên form để sửa
-        function editDeTai(id, ma_dt, ten_dt, giang_vien_hd) {
+        function editDeTai(id, ma_dt, ten_dt, giang_vien_huong_dan) {
             document.getElementById('de-tai-id').value = id;
             document.getElementById('ma_dt').value = ma_dt;
             document.getElementById('ten_dt').value = ten_dt;
-            document.getElementById('giang_vien_hd').value = giang_vien_hd;
-            document.getElementById('form-title').innerText = 'Cập nhật Đề Tài';
+            document.getElementById('giang_vien_hd').value = giang_vien_huong_dan;
+            document.getElementById('form-title').innerHTML = '<span>✏️</span> Cập nhật Đề Tài';
             document.getElementById('btn-cancel').style.display = 'inline-block';
             document.getElementById('btn-save').innerText = 'Cập Nhật';
         }
@@ -139,7 +177,7 @@
             document.getElementById('ma_dt').value = '';
             document.getElementById('ten_dt').value = '';
             document.getElementById('giang_vien_hd').value = '';
-            document.getElementById('form-title').innerText = 'Thêm mới Đề Tài';
+            document.getElementById('form-title').innerHTML = '<span>➕</span> Thêm mới Đề Tài';
             document.getElementById('btn-cancel').style.display = 'none';
             document.getElementById('btn-save').innerText = 'Lưu Đề Tài';
         }
