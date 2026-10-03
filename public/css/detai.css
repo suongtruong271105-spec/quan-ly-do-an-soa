@@ -1,0 +1,233 @@
+/* --- Google Fonts & Variables --- */
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap');
+
+:root {
+    --bg-main: #f3f4f6;
+    --blue-dark: #0f172a; 
+    --blue-navy: #1e3a8a;
+    --blue-primary: #3b82f6;
+    --text-main: #334155;
+    --text-muted: #64748b;
+    --border-color: #e2e8f0;
+    --white: #ffffff;
+    --danger: #ef4444;
+}
+
+/* --- Base Styles --- */
+body {
+    background-color: var(--bg-main);
+    color: var(--text-main);
+    font-family: 'Inter', sans-serif;
+    -webkit-font-smoothing: antialiased;
+    margin: 0;
+    padding: 2rem 1rem;
+    display: flex;
+    justify-content: center;
+}
+
+/* --- Nút Quay Lại --- */
+.btn-back {
+    background-color: transparent;
+    color: var(--blue-navy, #1e3a8a);
+    border: 1px solid var(--blue-navy, #1e3a8a);
+    padding: 0.5rem 1rem;
+    border-radius: 6px;
+    cursor: pointer;
+    font-family: 'Inter', sans-serif;
+    font-weight: 600;
+    font-size: 0.9rem;
+    margin-bottom: 1rem;
+    margin-top: 1rem;
+    transition: all 0.2s ease;
+}
+
+.btn-back:hover {
+    background-color: var(--blue-navy, #1e3a8a);
+    color: #ffffff;
+    transform: translateX(-3px);
+}
+
+.container {
+    width: 100%;
+    max-width: 1000px;
+}
+
+/* --- Header / Title --- */
+h1 {
+    font-size: 1.5rem;
+    font-weight: 700;
+    color: var(--blue-dark);
+    margin-bottom: 1.5rem;
+    text-transform: uppercase;
+    letter-spacing: 0.5px;
+    border-left: 4px solid var(--blue-primary);
+    padding-left: 1rem;
+}
+
+/* --- Form Container --- */
+.form-container {
+    background: var(--white);
+    border: 1px solid var(--border-color);
+    border-radius: 12px;
+    padding: 1.5rem;
+    margin-bottom: 2rem;
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+}
+
+.form-container h3 {
+    font-size: 1.1rem;
+    font-weight: 600;
+    color: var(--blue-navy);
+    margin-top: 0;
+    margin-bottom: 1rem;
+    border-bottom: 1px solid var(--border-color);
+    padding-bottom: 0.75rem;
+}
+
+/* Inputs */
+input[type="text"] {
+    width: calc(33.33% - 10px); /* Chia làm 3 cột trên cùng 1 hàng */
+    padding: 0.6rem 1rem;
+    margin-right: 10px;
+    margin-bottom: 1rem;
+    border: 1px solid var(--border-color);
+    border-radius: 6px;
+    font-family: 'Inter', sans-serif;
+    font-size: 0.95rem;
+    color: var(--text-main);
+    background-color: #f8fafc;
+    transition: all 0.2s ease;
+    box-sizing: border-box;
+}
+
+input[type="text"]:focus {
+    outline: none;
+    border-color: var(--blue-primary);
+    background-color: var(--white);
+    box-shadow: 0 0 0 3px rgba(59, 130, 246, 0.1);
+}
+
+/* Buttons */
+button {
+    font-family: 'Inter', sans-serif;
+    font-weight: 500;
+    font-size: 0.9rem;
+    padding: 0.6rem 1.25rem;
+    border-radius: 6px;
+    border: none;
+    cursor: pointer;
+    transition: all 0.2s ease;
+    margin-right: 10px;
+}
+
+/* Nút Lưu Đề Tài (Tương đương nút lưu sinh viên) */
+button[onclick="saveDeTai()"], #btn-save {
+    background-color: var(--blue-navy);
+    color: var(--white);
+    box-shadow: 0 2px 4px rgba(30, 58, 138, 0.2);
+}
+
+button[onclick="saveDeTai()"]:hover, #btn-save:hover {
+    background-color: var(--blue-dark);
+    transform: translateY(-1px);
+}
+
+/* Nút Hủy */
+button[onclick="resetForm()"], #btn-cancel {
+    background-color: #e2e8f0;
+    color: var(--text-main);
+}
+
+button[onclick="resetForm()"]:hover, #btn-cancel:hover {
+    background-color: #cbd5e1;
+}
+
+/* Responsive Form for smaller screens */
+@media (max-width: 768px) {
+    input[type="text"] {
+        width: 100%;
+        margin-right: 0;
+    }
+}
+
+/* --- Table Container --- */
+table {
+    width: 100%;
+    border-collapse: collapse;
+    background: var(--white);
+    border-radius: 12px;
+    overflow: hidden; 
+    box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
+    border: 1px solid var(--border-color);
+}
+
+thead {
+    background-color: #f8fafc;
+    border-bottom: 1px solid var(--border-color);
+}
+
+th {
+    text-align: left;
+    padding: 1rem 1.5rem;
+    font-weight: 600;
+    color: var(--text-muted);
+    font-size: 0.85rem;
+    text-transform: uppercase;
+}
+
+td {
+    padding: 1rem 1.5rem;
+    border-bottom: 1px solid #f1f5f9;
+    color: var(--text-main);
+    vertical-align: middle;
+}
+
+tbody tr {
+    transition: background-color 0.2s ease;
+}
+
+tbody tr:hover {
+    background-color: #f8fafc;
+}
+
+tbody tr:last-child td {
+    border-bottom: none;
+}
+
+/* Nổi bật text trong bảng */
+td:nth-child(2) { /* Cột Mã Đề Tài */
+    font-family: monospace;
+    color: var(--text-muted);
+    font-weight: 600;
+}
+
+td:nth-child(3) { /* Cột Tên Đề Tài */
+    font-weight: 600;
+    color: var(--blue-dark);
+}
+
+td:nth-child(4) { /* Cột Giảng Viên Hướng Dẫn */
+    font-size: 0.9rem;
+}
+
+/* Thao tác (Buttons in Table) */
+td button {
+    padding: 0.4rem 0.8rem;
+    font-size: 0.85rem;
+    margin-right: 5px;
+    border-radius: 4px;
+}
+
+td button:first-child { /* Nút Sửa */
+    background-color: #eff6ff;
+    color: var(--blue-primary);
+    border: 1px solid #bfdbfe;
+}
+td button:first-child:hover { background-color: #dbeafe; }
+
+td button:last-child { /* Nút Xóa */
+    background-color: #fef2f2;
+    color: var(--danger);
+    border: 1px solid #fecaca;
+}
+td button:last-child:hover { background-color: #fee2e2; }

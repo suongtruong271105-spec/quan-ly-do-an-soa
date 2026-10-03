@@ -1,141 +1,151 @@
-                    <div>
-                        <label for="giang_vien_huong_dan">Giảng viên hướng dẫn</label>
-                        <input id="giang_vien_huong_dan" name="giang_vien_huong_dan" maxlength="100" required>
-                    </div>
-                </div>
-                <div class="actions">
-                    <button type="submit" class="btn-primary" id="submit-btn">Thêm mới</button>
-                    <button type="button" class="btn-ghost" id="reset-btn">Hủy</button>
-                </div>
-            </form>
-        </section>
-        <section class="card">
-            <h2>Danh sách đề tài</h2>
-            <table>
-                <thead>
-                    <tr>
-                        <th>Mã</th>
-                        <th>Tên đề tài</th>
-                        <th>Giảng viên</th>
-                        <th></th>
-                    </tr>
-                </thead>
-                <tbody id="de-tai-table"></tbody>
-            </table>
-        </section>
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Quản lý Đề Tài</title>
+    <!-- File CSS riêng của bạn -->
+    <link href="detai.css" rel="stylesheet">
+</head>
+<body>
+    <div class="container">
+        <!-- Nút Quay lại (nếu cần điều hướng) -->
+        <!-- <button class="btn-back" onclick="window.history.back()">← Quay lại</button> -->
+
+        <h1>Quản lý Danh Sách Đề Tài</h1>
+
+        <!-- Form Thêm / Sửa Đề Tài -->
+        <div class="form-container">
+            <h3 id="form-title">Thêm mới Đề Tài</h3>
+            <input type="hidden" id="de-tai-id">
+            
+            <div class="input-group-wrapper">
+                <input type="text" id="ma_dt" placeholder="Mã Đề Tài">
+                <input type="text" id="ten_dt" placeholder="Tên Đề Tài">
+                <input type="text" id="giang_vien_hd" placeholder="Giảng Viên Hướng Dẫn">
+            </div>
+
+            <div class="button-group">
+                <button onclick="saveDeTai()" id="btn-save">Lưu Đề Tài</button>
+                <button onclick="resetForm()" style="display:none;" id="btn-cancel">Hủy</button>
+            </div>
+        </div>
+
+        <!-- Bảng hiển thị danh sách -->
+        <table>
+            <thead>
+                <tr>
+                    <th>ID</th>
+                    <th>Mã Đề Tài</th>
+                    <th>Tên Đề Tài</th>
+                    <th>Giảng Viên Hướng Dẫn</th>
+                    <th style="text-align: right;">Thao tác</th>
+                </tr>
+            </thead>
+            <tbody id="table-body">
+                <!-- Dữ liệu được load bằng JavaScript -->
+            </tbody>
+        </table>
     </div>
+
     <script>
         const API_URL = '/api/de-tai';
-        const form = document.getElementById('de-tai-form');
-        const tableBody = document.getElementById('de-tai-table');
-        const alertBox = document.getElementById('alert');
-        const formTitle = document.getElementById('form-title');
-        const submitBtn = document.getElementById('submit-btn');
-        function escapeHtml(value) {
-            return String(value ?? '')
-                .replaceAll('&', '&amp;')
-                .replaceAll('<', '&lt;')
-                .replaceAll('>', '&gt;')
-                .replaceAll('"', '&quot;')
-                .replaceAll("'", '&#039;');
-        }
-        function showAlert(message, type) {
-            alertBox.textContent = message;
-            alertBox.className = `alert show ${type}`;
-        }
-        function clearForm() {
-            form.reset();
-            document.getElementById('id').value = '';
-            formTitle.textContent = 'Thêm đề tài';
-            submitBtn.textContent = 'Thêm mới';
-        }
-        async function request(url, options = {}) {
-            const response = await fetch(url, {
-                headers: {
-                    'Accept': 'application/json',
-                    'Content-Type': 'application/json',
-                    ...(options.headers || {}),
-                },
-                ...options,
-            });
-            const payload = await response.json().catch(() => ({}));
-            if (!response.ok) {
-                const errors = payload.errors
-                    ? Object.values(payload.errors).flat().join(' ')
-                    : (payload.message || 'Có lỗi xảy ra.');
-                throw new Error(errors);
-            }
-            return payload;
-        }
-        async function loadDeTai() {
-            const { data } = await request(API_URL);
-            if (!data.length) {
-                tableBody.innerHTML = '<tr><td colspan="4" class="empty">Chưa có đề tài nào.</td></tr>';
-                return;
-            }
-            tableBody.innerHTML = data.map((item) => `
-                <tr>
-                    <td>${escapeHtml(item.ma_dt)}</td>
-                    <td>${escapeHtml(item.ten_dt)}</td>
-                    <td>${escapeHtml(item.giang_vien_huong_dan)}</td>
-                    <td class="ops">
-                        <button class="btn-ghost btn-small" data-edit="${item.id}">Sửa</button>
-                        <button class="btn-danger btn-small" data-delete="${item.id}">Xóa</button>
-                    </td>
-                </tr>
-            `).join('');
-        }
-        form.addEventListener('submit', async (event) => {
-            event.preventDefault();
-            const id = document.getElementById('id').value;
-            const body = JSON.stringify({
-                ma_dt: document.getElementById('ma_dt').value.trim(),
-                ten_dt: document.getElementById('ten_dt').value.trim(),
-                giang_vien_huong_dan: document.getElementById('giang_vien_huong_dan').value.trim(),
-            });
+
+        // 1. Load danh sách đề tài
+        async function fetchDeTai() {
             try {
-                const result = id
-                    ? await request(`${API_URL}/${id}`, { method: 'PUT', body })
-                    : await request(API_URL, { method: 'POST', body });
-                showAlert(result.message, 'success');
-                clearForm();
-                await loadDeTai();
+                const res = await fetch(API_URL);
+                const result = await res.json();
+                let rows = '';
+                result.data.forEach(item => {
+                    rows += `
+                        <tr>
+                            <td>${item.id}</td>
+                            <td><strong>${item.ma_dt}</strong></td>
+                            <td>${item.ten_dt}</td>
+                            <td>${item.giang_vien_hd || ''}</td>
+                            <td style="text-align: right;">
+                                <button onclick="editDeTai(${item.id}, '${item.ma_dt}', '${item.ten_dt}', '${item.giang_vien_hd || ''}')">Sửa</button>
+                                <button onclick="deleteDeTai(${item.id})">Xóa</button>
+                            </td>
+                        </tr>
+                    `;
+                });
+                document.getElementById('table-body').innerHTML = rows;
             } catch (error) {
-                showAlert(error.message, 'error');
+                console.error('Lỗi tải dữ liệu:', error);
             }
-        });
-        document.getElementById('reset-btn').addEventListener('click', clearForm);
-        tableBody.addEventListener('click', async (event) => {
-            const editId = event.target.dataset.edit;
-            const deleteId = event.target.dataset.delete;
-            if (editId) {
-                try {
-                    const { data } = await request(`${API_URL}/${editId}`);
-                    document.getElementById('id').value = data.id;
-                    document.getElementById('ma_dt').value = data.ma_dt;
-                    document.getElementById('ten_dt').value = data.ten_dt;
-                    document.getElementById('giang_vien_huong_dan').value = data.giang_vien_huong_dan;
-                    formTitle.textContent = 'Sửa đề tài';
-                    submitBtn.textContent = 'Cập nhật';
-                } catch (error) {
-                    showAlert(error.message, 'error');
+        }
+
+        // 2. Thêm mới hoặc Cập nhật
+        async function saveDeTai() {
+            const id = document.getElementById('de-tai-id').value;
+            const data = {
+                ma_dt: document.getElementById('ma_dt').value,
+                ten_dt: document.getElementById('ten_dt').value,
+                giang_vien_hd: document.getElementById('giang_vien_hd').value
+            };
+
+            let url = API_URL;
+            let method = 'POST';
+
+            if (id) {
+                url = `${API_URL}/${id}`;
+                method = 'PUT';
+            }
+
+            const res = await fetch(url, {
+                method: method,
+                headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
+                body: JSON.stringify(data)
+            });
+
+            const result = await res.json();
+            if (res.ok) {
+                alert(result.message);
+                resetForm();
+                fetchDeTai();
+            } else {
+                alert('Lỗi: ' + JSON.stringify(result.errors || result.message));
+            }
+        }
+
+        // 3. Đưa dữ liệu lên form để sửa
+        function editDeTai(id, ma_dt, ten_dt, giang_vien_hd) {
+            document.getElementById('de-tai-id').value = id;
+            document.getElementById('ma_dt').value = ma_dt;
+            document.getElementById('ten_dt').value = ten_dt;
+            document.getElementById('giang_vien_hd').value = giang_vien_hd;
+            document.getElementById('form-title').innerText = 'Cập nhật Đề Tài';
+            document.getElementById('btn-cancel').style.display = 'inline-block';
+            document.getElementById('btn-save').innerText = 'Cập Nhật';
+        }
+
+        // 4. Xóa đề tài
+        async function deleteDeTai(id) {
+            if (confirm('Bạn có chắc chắn muốn xóa đề tài này không?')) {
+                const res = await fetch(`${API_URL}/${id}`, { method: 'DELETE' });
+                if (res.ok) {
+                    alert('Xóa thành công!');
+                    fetchDeTai();
+                } else {
+                    alert('Xóa thất bại!');
                 }
             }
-            if (deleteId) {
-                if (!confirm('Bạn chắc chắn muốn xóa đề tài này?')) {
-                    return;
-                }
-                try {
-                    const result = await request(`${API_URL}/${deleteId}`, { method: 'DELETE' });
-                    showAlert(result.message, 'success');
-                    clearForm();
-                    await loadDeTai();
-                } catch (error) {
-                    showAlert(error.message, 'error');
-                }
-            }
-        });
-        loadDeTai().catch((error) => showAlert(error.message, 'error'));
+        }
+
+        // 5. Reset form
+        function resetForm() {
+            document.getElementById('de-tai-id').value = '';
+            document.getElementById('ma_dt').value = '';
+            document.getElementById('ten_dt').value = '';
+            document.getElementById('giang_vien_hd').value = '';
+            document.getElementById('form-title').innerText = 'Thêm mới Đề Tài';
+            document.getElementById('btn-cancel').style.display = 'none';
+            document.getElementById('btn-save').innerText = 'Lưu Đề Tài';
+        }
+
+        // Khởi chạy load dữ liệu khi mở trang
+        fetchDeTai();
     </script>
 </body>
 </html>
