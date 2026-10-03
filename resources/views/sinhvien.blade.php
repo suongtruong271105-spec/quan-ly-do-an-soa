@@ -14,7 +14,9 @@
 <body>
 
     <div class="container">
-
+<button class="btn-back" onclick="window.location.href='/dashboard'">
+            &#8592; Quay lại
+        </button>
         <h1>QUẢN LÝ SINH VIÊN</h1>
 
         <div class="form-container">
