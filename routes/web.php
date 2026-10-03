@@ -20,3 +20,7 @@ Route::get('/sinhvien', function () {
 Route::get('/dang-ky', function () {
     return view('dangky');
 });
+
+Route::get('/de-tai', function () {
+    return view('de-tai');
+});
