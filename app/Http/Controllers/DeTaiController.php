@@ -56,12 +56,20 @@ class DeTaiController extends Controller
         ], 200);
     }
 
-    public function destroy(DeTai $deTai): JsonResponse
-    {
-        $deTai->delete();
+   public function destroy($id)
+{
+    // 1. Tìm đề tài trong Database dựa vào ID
+    $detai = \App\Models\DeTai::find($id);
 
-        return response()->json([
-            'message' => 'Xóa đề tài thành công.',
-        ]);
+    // 2. Nếu không tìm thấy, trả về lỗi 404 (Not Found)
+    if (!$detai) {
+        return response()->json(['message' => 'Không tìm thấy đề tài'], 404);
     }
+
+    // 3. Nếu tìm thấy, THỰC SỰ XÓA nó khỏi Database
+    $detai->delete();
+
+    // 4. Báo thành công về cho Frontend (Mã 200 OK)
+    return response()->json(['message' => 'Đã xóa đề tài thành công'], 200);
+}
 }

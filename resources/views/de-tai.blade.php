@@ -9,22 +9,7 @@
 </head>
 <body>
 
-    <!-- 1. Thanh điều hướng Top Navbar -->
-    <nav class="navbar">
-        <div class="navbar-brand">
-            <svg width="22" height="22" fill="none" stroke="currentColor" stroke-width="2" viewBox="0 0 24 24">
-                <path d="M4 6h16M4 12h16M4 18h16"></path>
-            </svg>
-            <span>SOA_PROJECT</span>
-        </div>
-        <ul class="nav-links">
-            <li><a href="/dashboard"><span>⏱</span> Dashboard</a></li>
-            <li><a href="/sinh-vien"><span>👤</span> Quản lý Sinh Viên</a></li>
-            <li><a href="/de-tai" class="active"><span>📑</span> Quản lý Đề Tài</a></li>
-            <li><a href="/dang-ky"><span>☑</span> Đăng Ký & Chấm Điểm</a></li>
-        </ul>
-    </nav>
-
+  
     <!-- 2. Hero Banner Header -->
     <header class="hero-banner">
         <div class="hero-content">
