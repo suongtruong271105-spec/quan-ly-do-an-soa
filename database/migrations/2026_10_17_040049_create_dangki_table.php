@@ -9,13 +9,13 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-      public function up(): void
+ public function up(): void
 {
-    Schema::create('detai', function (Blueprint $table) {
+    Schema::connection('dangky_conn')->create('dangki', function (Blueprint $table) {
         $table->id();
-        $table->string('ma_dt', 20)->unique();
-        $table->string('ten_dt', 255);
-        $table->string('giang_vien_huong_dan', 100);
+        $table->string('masv', 20); // Dùng string, KHÔNG dùng foreignId()
+        $table->string('madt', 20); // Dùng string, KHÔNG dùng foreignId()
+        $table->string('trangthai', 50)->default('Cho Duyet');
         $table->timestamps();
     });
 }
@@ -25,7 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('detai');
+        Schema::dropIfExists('dangki');
     }
- 
 };

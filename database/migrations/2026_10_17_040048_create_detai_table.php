@@ -9,13 +9,13 @@ return new class extends Migration
     /**
      * Run the migrations.
      */
-       public function up(): void
+   public function up(): void
 {
-    Schema::create('sinhvien', function (Blueprint $table) {
-        $table->id();
-        $table->string('ma_sv', 20)->unique();
-        $table->string('ho_ten', 100);
-        $table->string('lop', 50);
+    Schema::connection('detai_conn')->create('detai', function (Blueprint $table) {
+        $table->string('madt', 20)->primary();
+        $table->string('tendt', 255);
+        $table->string('giangvien', 100)->nullable();
+        $table->integer('soluong_toida')->default(1);
         $table->timestamps();
     });
 }
@@ -25,7 +25,6 @@ return new class extends Migration
      */
     public function down(): void
     {
-        Schema::dropIfExists('sinhvien');
+        Schema::dropIfExists('detai');
     }
-
 };

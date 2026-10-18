@@ -12,16 +12,15 @@ class SinhVienController extends Controller
     public function index()
     {
         $sinhViens = SinhVien::all();
-
         return response()->json($sinhViens);
     }
 
-
-    // GET /api/sinhvien/{id}
+    // GET /api/sinhvien/{masv}
     // Lấy thông tin một sinh viên
-    public function show($id)
+    public function show($masv)
     {
-        $sinhVien = SinhVien::find($id);
+        // Vì Model đã cấu hình $primaryKey = 'masv', hàm find() sẽ tự hiểu
+        $sinhVien = SinhVien::find($masv);
 
         if (!$sinhVien) {
             return response()->json([
@@ -32,21 +31,25 @@ class SinhVienController extends Controller
         return response()->json($sinhVien);
     }
 
-
     // POST /api/sinhvien
     // Thêm sinh viên
     public function store(Request $request)
     {
         $request->validate([
-            'ma_sv' => 'required|string|max:20|unique:sinhvien,ma_sv',
-            'ho_ten' => 'required|string|max:100',
-            'lop' => 'required|string|max:50'
+            // Bắt buộc trỏ rõ connection: sinhvien_conn
+            'masv' => 'required|string|max:20|unique:sinhvien_conn.sinhvien,masv',
+            'hoten' => 'required|string|max:100',
+            'ngaysinh' => 'nullable|date',
+            'lop' => 'nullable|string|max:50',
+            'email' => 'nullable|email|max:100'
         ]);
 
         $sinhVien = SinhVien::create([
-            'ma_sv' => $request->ma_sv,
-            'ho_ten' => $request->ho_ten,
-            'lop' => $request->lop
+            'masv' => $request->masv,
+            'hoten' => $request->hoten,
+            'ngaysinh' => $request->ngaysinh,
+            'lop' => $request->lop,
+            'email' => $request->email
         ]);
 
         return response()->json([
@@ -55,12 +58,11 @@ class SinhVienController extends Controller
         ], 201);
     }
 
-
-    // PUT /api/sinhvien/{id}
+    // PUT /api/sinhvien/{masv}
     // Cập nhật sinh viên
-    public function update(Request $request, $id)
+    public function update(Request $request, $masv)
     {
-        $sinhVien = SinhVien::find($id);
+        $sinhVien = SinhVien::find($masv);
 
         if (!$sinhVien) {
             return response()->json([
@@ -69,15 +71,20 @@ class SinhVienController extends Controller
         }
 
         $request->validate([
-            'ma_sv' => 'required|string|max:20|unique:sinhvien,ma_sv,' . $id,
-            'ho_ten' => 'required|string|max:100',
-            'lop' => 'required|string|max:50'
+            // Check unique nhưng bỏ qua bản ghi hiện tại
+            'masv' => 'required|string|max:20|unique:sinhvien_conn.sinhvien,masv,' . $masv . ',masv',
+            'hoten' => 'required|string|max:100',
+            'ngaysinh' => 'nullable|date',
+            'lop' => 'nullable|string|max:50',
+            'email' => 'nullable|email|max:100'
         ]);
 
         $sinhVien->update([
-            'ma_sv' => $request->ma_sv,
-            'ho_ten' => $request->ho_ten,
-            'lop' => $request->lop
+            'masv' => $request->masv,
+            'hoten' => $request->hoten,
+            'ngaysinh' => $request->ngaysinh,
+            'lop' => $request->lop,
+            'email' => $request->email
         ]);
 
         return response()->json([
@@ -86,12 +93,11 @@ class SinhVienController extends Controller
         ]);
     }
 
-
-    // DELETE /api/sinhvien/{id}
+    // DELETE /api/sinhvien/{masv}
     // Xóa sinh viên
-    public function destroy($id)
+    public function destroy($masv)
     {
-        $sinhVien = SinhVien::find($id);
+        $sinhVien = SinhVien::find($masv);
 
         if (!$sinhVien) {
             return response()->json([

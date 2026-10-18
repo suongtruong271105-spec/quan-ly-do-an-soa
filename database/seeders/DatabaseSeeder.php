@@ -2,36 +2,33 @@
 
 namespace Database\Seeders;
 
-use App\Models\User;
-use Illuminate\Database\Console\Seeds\WithoutModelEvents;
 use Illuminate\Database\Seeder;
 use App\Models\SinhVien;
 use App\Models\DeTai;
-use App\Models\DangKy;
+use App\Models\DangKi;
+
 class DatabaseSeeder extends Seeder
 {
-    use WithoutModelEvents;
-
-    /**
-     * Seed the application's database.
-     */
-  public function run(): void
+    public function run(): void
     {
-        // Tạo 10 Sinh viên và 5 Đề tài
-        SinhVien::factory(10)->create();
-        DeTai::factory(5)->create();
+        // 1. Tạo thủ công 2 sinh viên vào DB sinh viên
+        SinhVien::create([
+            'masv' => 'SV001', 'hoten' => 'Nguyễn Văn A', 'ngaysinh' => '2003-01-01', 'lop' => 'KTPM', 'email' => 'a@gmail.com'
+        ]);
+        SinhVien::create([
+            'masv' => 'SV002', 'hoten' => 'Trần Thị B', 'ngaysinh' => '2003-02-02', 'lop' => 'HTTT', 'email' => 'b@gmail.com'
+        ]);
 
-        // Lấy tất cả sinh viên và đề tài vừa tạo ra
-        $sinhViens = SinhVien::all();
-        $deTais = DeTai::all();
+        // 2. Tạo thủ công 2 đề tài vào DB đề tài
+        DeTai::create([
+            'madt' => 'DT001', 'tendt' => 'Xây dựng web SOA', 'giangvien' => 'Cô giáo X', 'soluong_toida' => 2
+        ]);
+        DeTai::create([
+            'madt' => 'DT002', 'tendt' => 'Nhận diện khuôn mặt', 'giangvien' => 'Thầy giáo Y', 'soluong_toida' => 1
+        ]);
 
-        // Duyệt qua từng sinh viên, lấy ngẫu nhiên 1 đề tài để gán vào bảng đăng ký
-        foreach ($sinhViens as $sv) {
-            DangKy::create([
-                'sinhvien_id' => $sv->id,
-                'detai_id' => $deTais->random()->id,
-                'diem' => rand(50, 100) / 10, // Tạo điểm ngẫu nhiên từ 5.0 đến 10.0
-            ]);
-        }
+        // 3. Tạo dữ liệu đăng ký vào DB đăng ký
+        DangKi::create(['masv' => 'SV001', 'madt' => 'DT001', 'trangthai' => 'Da Duyet']);
+        DangKi::create(['masv' => 'SV002', 'madt' => 'DT002', 'trangthai' => 'Cho Duyet']);
     }
 }

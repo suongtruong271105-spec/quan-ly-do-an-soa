@@ -68,22 +68,24 @@
                 </div>
                 <div class="form-card-body">
                     <form id="formDangKy">
-                        <div class="mb-3">
-                            <label for="dk_sinhvien_id" class="form-label text-secondary small fw-semibold">Sinh Viên</label>
-                            <select id="dk_sinhvien_id" class="form-select form-input-custom" required>
-                                <option value="">-- Đang tải danh sách sinh viên... --</option>
-                            </select>
-                        </div>
-                        <div class="mb-4">
-                            <label for="dk_detai_id" class="form-label text-secondary small fw-semibold">Đề Tài Đồ Án</label>
-                            <select id="dk_detai_id" class="form-select form-input-custom" required>
-                                <option value="">-- Đang tải danh sách đề tài... --</option>
-                            </select>
-                        </div>
-                        <button type="submit" id="btnDangKy" class="btn btn-primary-custom w-100">
-                            <i class="bi bi-check-circle me-1"></i> Xác Nhận Đăng Ký
-                        </button>
-                    </form>
+                <div class="mb-3">
+                    <label for="dk_masv" class="form-label text-secondary small fw-semibold">Sinh Viên</label>
+                    <!-- Đổi id thành dk_masv -->
+                    <select id="dk_masv" class="form-select form-input-custom" required>
+                        <option value="">-- Đang tải danh sách sinh viên... --</option>
+                    </select>
+                </div>
+                <div class="mb-4">
+                    <label for="dk_madt" class="form-label text-secondary small fw-semibold">Đề Tài Đồ Án</label>
+                    <!-- Đổi id thành dk_madt -->
+                    <select id="dk_madt" class="form-select form-input-custom" required>
+                        <option value="">-- Đang tải danh sách đề tài... --</option>
+                    </select>
+                </div>
+                <button type="submit" id="btnDangKy" class="btn btn-primary-custom w-100">
+                    <i class="bi bi-check-circle me-1"></i> Xác Nhận Đăng Ký
+                </button>
+            </form>
                 </div>
             </div>
         </div>

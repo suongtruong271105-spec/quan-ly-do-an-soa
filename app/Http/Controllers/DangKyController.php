@@ -2,7 +2,9 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\DangKy;
+use App\Models\DangKi; // Chú ý tên Model DangKi (viết i ngắn theo file của bạn)
+use App\Models\SinhVien;
+use App\Models\DeTai;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
@@ -11,17 +13,16 @@ use Illuminate\Support\Facades\Validator;
 class DangKyController extends Controller
 {
     /**
-     * Xử lý API sinh viên đăng ký đề tài
+     * Xử lý API sinh viên đăng ký đề tài chuẩn SOA
      */
     public function store(Request $request)
     {
+        // Bước 1: Chỉ Validate định dạng đầu vào (Không dùng 'exists' nối bảng ở đây nữa)
         $validator = Validator::make($request->all(), [
-            'detai_id'    => 'required|exists:detai,id',
-            'sinhvien_id' => 'nullable|exists:sinhvien,id',
+            'madt' => 'required',
+            'masv' => 'nullable',
         ], [
-            'detai_id.required' => 'Vui lòng chọn đề tài muốn đăng ký.',
-            'detai_id.exists'   => 'Đề tài được chọn không tồn tại.',
-            'sinhvien_id.exists' => 'Sinh viên không tồn tại trong hệ thống.',
+            'madt.required' => 'Vui lòng chọn đề tài muốn đăng ký.',
         ]);
 
         if ($validator->fails()) {
@@ -32,17 +33,40 @@ class DangKyController extends Controller
             ], 422);
         }
 
-        $sinhVienId = Auth::id() ?? $request->sinhvien_id;
-        $detaiId = $request->detai_id;
+        // Lấy mã sinh viên từ Request hoặc Auth
+        $sinhVienId = Auth::check() ? Auth::user()->masv : $request->masv;
+        $detaiId = $request->madt;
 
         if (!$sinhVienId) {
             return response()->json([
                 'success' => false,
-                'message' => 'Thiếu thông tin sinh viên (vui lòng truyền sinhvien_id trong body hoặc thực hiện đăng nhập).'
+                'message' => 'Thiếu thông tin sinh viên (vui lòng truyền masv trong body hoặc thực hiện đăng nhập).'
             ], 400);
         }
 
-        $daDangKy = DangKy::where('sinhvien_id', $sinhVienId)->exists();
+        // =====================================================================
+        // BƯỚC 2: GIAO TIẾP SOA CHÉO SERVICE (THAY THẾ CHO FOREIGN KEY/EXISTS)
+        // Service Đăng ký "hỏi" Service Sinh Viên xem có mã này không
+        $sinhVienHopLe = SinhVien::where('masv', $sinhVienId)->exists();
+        if (!$sinhVienHopLe) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Sinh viên không tồn tại trong hệ thống (Dữ liệu từ Student Service).'
+            ], 404);
+        }
+
+        // Service Đăng ký "hỏi" Service Đề Tài xem có mã này không
+        $deTaiHopLe = DeTai::where('madt', $detaiId)->exists();
+        if (!$deTaiHopLe) {
+            return response()->json([
+                'success' => false,
+                'message' => 'Đề tài được chọn không tồn tại (Dữ liệu từ Topic Service).'
+            ], 404);
+        }
+        // =====================================================================
+
+        // Bước 3: Kiểm tra logic nghiệp vụ tại Local Service (DangKi)
+        $daDangKy = DangKi::where('masv', $sinhVienId)->exists();
 
         if ($daDangKy) {
             return response()->json([
@@ -51,15 +75,17 @@ class DangKyController extends Controller
             ], 400);
         }
 
+        // Bước 4: Lưu dữ liệu
         try {
-            DB::beginTransaction();
+            DB::connection('dangky_conn')->beginTransaction(); // Bắt buộc dùng đúng connection
 
-            $dangKy = DangKy::create([
-                'sinhvien_id' => $sinhVienId,
-                'detai_id'    => $detaiId,
+            $dangKy = DangKi::create([
+                'masv'      => $sinhVienId,
+                'madt'      => $detaiId,
+                'trangthai' => 'Cho Duyet'
             ]);
 
-            DB::commit();
+            DB::connection('dangky_conn')->commit();
 
             return response()->json([
                 'success' => true,
@@ -67,8 +93,7 @@ class DangKyController extends Controller
                 'data'    => $dangKy
             ], 201);
         } catch (\Exception $e) {
-            DB::rollBack();
-
+            DB::connection('dangky_conn')->rollBack();
             return response()->json([
                 'success' => false,
                 'message' => 'Có lỗi xảy ra trong quá trình xử lý.',
@@ -78,23 +103,21 @@ class DangKyController extends Controller
     }
 
     /**
-     * API Nhập điểm
+     * API Nhập điểm chuẩn SOA
      */
     public function nhapDiem(Request $request)
     {
+        // Lại tiếp tục loại bỏ rule 'exists'
         $validator = Validator::make($request->all(), [
-            'dang_ky_id'  => 'required_without_all:sinhvien_id|exists:dangky,id',
-            'sinhvien_id' => 'required_without:dang_ky_id|exists:sinhvien,id',
-            'detai_id'    => 'required_with:sinhvien_id|exists:detai,id',
-            'diem'        => 'required|numeric|min:0|max:10',
+            'dang_ky_id' => 'required_without_all:masv',
+            'masv'       => 'required_without:dang_ky_id',
+            'madt'       => 'required_with:masv',
+            'diem'       => 'required|numeric|min:0|max:10',
         ], [
-            'dang_ky_id.exists'  => 'Mã đăng ký không tồn tại trong hệ thống.',
-            'sinhvien_id.exists' => 'Sinh viên không tồn tại.',
-            'detai_id.exists'    => 'Đề tài không tồn tại.',
-            'diem.required'      => 'Vui lòng nhập điểm.',
-            'diem.numeric'       => 'Điểm phải là chữ số.',
-            'diem.min'           => 'Điểm không được nhỏ hơn 0.',
-            'diem.max'           => 'Điểm không được lớn hơn 10.',
+            'diem.required' => 'Vui lòng nhập điểm.',
+            'diem.numeric'  => 'Điểm phải là chữ số.',
+            'diem.min'      => 'Điểm không được nhỏ hơn 0.',
+            'diem.max'      => 'Điểm không được lớn hơn 10.',
         ]);
 
         if ($validator->fails()) {
@@ -106,11 +129,12 @@ class DangKyController extends Controller
         }
 
         try {
+            // Chỉ query trên bảng dangki
             if ($request->filled('dang_ky_id')) {
-                $dangKy = DangKy::find($request->dang_ky_id);
+                $dangKy = DangKi::find($request->dang_ky_id);
             } else {
-                $dangKy = DangKy::where('sinhvien_id', $request->sinhvien_id)
-                    ->where('detai_id', $request->detai_id)
+                $dangKy = DangKi::where('masv', $request->masv)
+                    ->where('madt', $request->madt)
                     ->first();
             }
 
@@ -121,6 +145,7 @@ class DangKyController extends Controller
                 ], 404);
             }
 
+            // Ghi chú: Nếu bảng dangki của bạn chưa có cột diem, bạn cần thêm cột này vào DB nhé!
             $dangKy->diem = floatval($request->diem);
             $dangKy->save();
 

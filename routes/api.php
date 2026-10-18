@@ -13,10 +13,10 @@ Route::get('/user', function (Request $request) {
 
 
 Route::get('/sinhvien', [SinhVienController::class, 'index']);
-Route::get('/sinhvien/{id}', [SinhVienController::class, 'show']);
+Route::get('/sinhvien/{masv}', [SinhVienController::class, 'show']);
 Route::post('/sinhvien', [SinhVienController::class, 'store']);
-Route::put('/sinhvien/{id}', [SinhVienController::class, 'update']);
-Route::delete('/sinhvien/{id}', [SinhVienController::class, 'destroy']);
+Route::put('/sinhvien/{masv}', [SinhVienController::class, 'update']);
+Route::delete('/sinhvien/{masv}', [SinhVienController::class, 'destroy']);
 
 
 Route::get('/dashboard/bao-cao', [DashboardController::class, 'getBaoCaoTongHop']);
@@ -25,7 +25,7 @@ Route::get('/dashboard/bao-cao', [DashboardController::class, 'getBaoCaoTongHop'
 Route::post('/dang-ky-de-tai', [DangKyController::class, 'store']);
 Route::put('/dang-ky-de-tai/nhap-diem', [DangKyController::class, 'nhapDiem']);
 Route::get('/de-tai', [DeTaiController::class, 'index']);          
-Route::get('/de-tai/{id}', [DeTaiController::class, 'show']);    
+Route::get('/de-tai/{madt}', [DeTaiController::class, 'show']);    
 Route::post('/de-tai', [DeTaiController::class, 'store']);         
-Route::put('/de-tai/{id}', [DeTaiController::class, 'update']);     
-Route::delete('/de-tai/{id}', [DeTaiController::class, 'destroy']);
+Route::put('/de-tai/{madt}', [DeTaiController::class, 'update']);     
+Route::delete('/de-tai/{madt}', [DeTaiController::class, 'destroy']);

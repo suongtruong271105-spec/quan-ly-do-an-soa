@@ -30,18 +30,32 @@ return [
     |
     */
 
-    'connections' => [
+ 'connections' => [
 
-        'sqlite' => [
+        // --- BẮT ĐẦU THÊM CẤU HÌNH CHO SOA BẰNG SQLITE ---
+
+        'sinhvien_conn' => [
             'driver' => 'sqlite',
             'url' => env('DB_URL'),
-            'database' => env('DB_DATABASE', database_path('database.sqlite')),
+            'database' => database_path('sinhvien_service.sqlite'), // Trỏ tới file CSDL sinh viên
             'prefix' => '',
-            'foreign_key_constraints' => env('DB_FOREIGN_KEYS', true),
-            'busy_timeout' => null,
-            'journal_mode' => null,
-            'synchronous' => null,
-            'transaction_mode' => 'DEFERRED',
+            'foreign_key_constraints' => false, // Quan trọng: Tắt để đúng chuẩn SOA
+        ],
+
+        'detai_conn' => [
+            'driver' => 'sqlite',
+            'url' => env('DB_URL'),
+            'database' => database_path('detai_service.sqlite'), // Trỏ tới file CSDL đề tài
+            'prefix' => '',
+            'foreign_key_constraints' => false, // Quan trọng: Tắt để đúng chuẩn SOA
+        ],
+
+        'dangky_conn' => [
+            'driver' => 'sqlite',
+            'url' => env('DB_URL'),
+            'database' => database_path('dangky_service.sqlite'), // Trỏ tới file CSDL đăng ký
+            'prefix' => '',
+            'foreign_key_constraints' => false, // Quan trọng: Tắt để đúng chuẩn SOA
         ],
 
         'mysql' => [

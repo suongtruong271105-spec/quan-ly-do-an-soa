@@ -15,8 +15,16 @@ class DeTaiController extends Controller
         ]);
     }
 
-    public function show(DeTai $deTai): JsonResponse
+    public function show($madt): JsonResponse
     {
+        $deTai = DeTai::find($madt);
+
+        if (!$deTai) {
+            return response()->json([
+                'message' => 'Không tìm thấy đề tài'
+            ], 404);
+        }
+
         return response()->json([
             'data' => $deTai,
         ]);
@@ -25,9 +33,11 @@ class DeTaiController extends Controller
     public function store(Request $request): JsonResponse
     {
         $validated = $request->validate([
-            'ma_dt' => 'required|string|max:20|unique:detai,ma_dt',
-            'ten_dt' => 'required|string|max:255',
-            'giang_vien_huong_dan' => 'required|string|max:100',
+            // Trỏ đúng connection topic_conn và tên cột madt
+            'madt'          => 'required|string|max:20|unique:detai_conn.detai,madt',
+            'tendt'         => 'required|string|max:255',
+            'giangvien'     => 'nullable|string|max:100',
+            'soluong_toida' => 'nullable|integer|min:1'
         ]);
 
         $deTai = DeTai::create($validated);
@@ -38,14 +48,20 @@ class DeTaiController extends Controller
         ], 201);
     }
 
-    public function update(Request $request, $id): JsonResponse
+    public function update(Request $request, $madt): JsonResponse
     {
-        $deTai = DeTai::findOrFail($id);
+        $deTai = DeTai::find($madt);
+
+        if (!$deTai) {
+            return response()->json(['message' => 'Không tìm thấy đề tài'], 404);
+        }
 
         $validated = $request->validate([
-            'ma_dt' => 'required|string|max:20|unique:detai,ma_dt,' . $id,
-            'ten_dt' => 'required|string|max:255',
-            'giang_vien_huong_dan' => 'required|string|max:100',
+            // Bỏ qua bản ghi hiện tại khi check unique
+            'madt'          => 'required|string|max:20|unique:detai_conn.detai,madt,' . $madt . ',madt',
+            'tendt'         => 'required|string|max:255',
+            'giangvien'     => 'nullable|string|max:100',
+            'soluong_toida' => 'nullable|integer|min:1'
         ]);
 
         $deTai->update($validated);
@@ -56,20 +72,20 @@ class DeTaiController extends Controller
         ], 200);
     }
 
-   public function destroy($id)
-{
-    // 1. Tìm đề tài trong Database dựa vào ID
-    $detai = \App\Models\DeTai::find($id);
+    public function destroy($madt): JsonResponse
+    {
+        // 1. Tìm đề tài trong Database dựa vào mã đề tài (khóa chính là chuỗi)
+        $detai = DeTai::find($madt);
 
-    // 2. Nếu không tìm thấy, trả về lỗi 404 (Not Found)
-    if (!$detai) {
-        return response()->json(['message' => 'Không tìm thấy đề tài'], 404);
+        // 2. Nếu không tìm thấy, trả về lỗi 404 (Not Found)
+        if (!$detai) {
+            return response()->json(['message' => 'Không tìm thấy đề tài'], 404);
+        }
+
+        // 3. Nếu tìm thấy, THỰC SỰ XÓA nó khỏi Database
+        $detai->delete();
+
+        // 4. Báo thành công về cho Frontend (Mã 200 OK)
+        return response()->json(['message' => 'Đã xóa đề tài thành công'], 200);
     }
-
-    // 3. Nếu tìm thấy, THỰC SỰ XÓA nó khỏi Database
-    $detai->delete();
-
-    // 4. Báo thành công về cho Frontend (Mã 200 OK)
-    return response()->json(['message' => 'Đã xóa đề tài thành công'], 200);
-}
 }

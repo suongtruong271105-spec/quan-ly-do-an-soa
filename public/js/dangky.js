@@ -50,8 +50,8 @@ async function loadDropdowns() {
         const resBC = await fetch(`${API_BASE}/dashboard/bao-cao`);
         const resultBC = await resBC.json();
         const listBC = resultBC.data || (Array.isArray(resultBC) ? resultBC : []);
-        // Gom các sinhvien_id đã có trong bảng đăng ký
-        registeredSvIds = listBC.map(item => item.sinhvien_id || item.sv_id || item.id_sinhvien);
+        // Gom các masv đã có trong bảng đăng ký (SOA dùng masv)
+        registeredSvIds = listBC.map(item => item.sinhvien_id || item.ma_sv || item.masv);
     } catch (e) {
         console.error('Không thể lấy danh sách báo cáo để lọc SV', e);
     }
@@ -60,47 +60,47 @@ async function loadDropdowns() {
     try {
         const res = await fetch(`${API_BASE}/sinhvien`);
         const result = await res.json();
-        const svSelect = document.getElementById('dk_sinhvien_id');
+        const svSelect = document.getElementById('dk_masv'); // Sửa lại id cho khớp form HTML mới
         let list = Array.isArray(result) ? result : (result.data || []);
 
-        // LỌC: Chỉ giữ lại các Sinh viên CHƯA ĐĂNG KÝ đề tài nào
-        list = list.filter(sv => !registeredSvIds.includes(sv.id));
+        // LỌC: Chỉ giữ lại các Sinh viên CHƯA ĐĂNG KÝ
+        list = list.filter(sv => !registeredSvIds.includes(sv.masv)); // So sánh bằng masv
 
         if (list.length > 0) {
             svSelect.innerHTML = '<option value="">-- Chọn sinh viên --</option>' +
                 list.map(sv => {
-                    const id = sv.id;
-                    const code = sv.ma_sv || id;
-                    const name = sv.ho_ten || sv.ten_sinh_vien || 'N/A';
+                    const id = sv.masv; // Dùng masv
+                    const code = sv.masv;
+                    const name = sv.hoten || sv.ho_ten || 'N/A';
                     return `<option value="${id}">${code} - ${name}</option>`;
                 }).join('');
         } else {
             svSelect.innerHTML = '<option value="">Tất cả sinh viên đã đăng ký đề tài!</option>';
         }
     } catch (e) {
-        document.getElementById('dk_sinhvien_id').innerHTML = '<option value="">Lỗi nạp danh sách sinh viên</option>';
+        document.getElementById('dk_masv').innerHTML = '<option value="">Lỗi nạp danh sách sinh viên</option>';
     }
 
     // 2. Tải danh sách Đề tài
     try {
         const res = await fetch(`${API_BASE}/de-tai`);
         const result = await res.json();
-        const dtSelect = document.getElementById('dk_detai_id');
+        const dtSelect = document.getElementById('dk_madt'); // Sửa lại id cho khớp form HTML mới
         const list = Array.isArray(result) ? result : (result.data || []);
 
         if (list.length > 0) {
             dtSelect.innerHTML = '<option value="">-- Chọn đề tài --</option>' +
                 list.map(dt => {
-                    const id = dt.id;
-                    const code = dt.ma_dt ? `[${dt.ma_dt}] ` : '';
-                    const title = dt.ten_dt || dt.ten_de_tai || 'N/A';
+                    const id = dt.madt; // Dùng madt
+                    const code = dt.madt ? `[${dt.madt}] ` : '';
+                    const title = dt.tendt || dt.ten_dt || 'N/A';
                     return `<option value="${id}">${code}${title}</option>`;
                 }).join('');
         } else {
             dtSelect.innerHTML = '<option value="">Chưa có đề tài trong hệ thống</option>';
         }
     } catch (e) {
-        document.getElementById('dk_detai_id').innerHTML = '<option value="">Lỗi nạp danh sách đề tài</option>';
+        document.getElementById('dk_madt').innerHTML = '<option value="">Lỗi nạp danh sách đề tài</option>';
     }
 
     // 3. Tải danh sách lượt Đăng ký CHƯA CÓ ĐIỂM (Phục vụ Chấm điểm)
@@ -116,7 +116,7 @@ async function loadDropdowns() {
         if (list.length > 0) {
             dkSelect.innerHTML = '<option value="">-- Chọn SV & Đề tài cần chấm điểm --</option>' +
                 list.map(dk => {
-                    const id = dk.dang_ky_id || dk.dangky_id || dk.id;
+                    const id = dk.dang_ky_id || dk.dangky_id || dk.id; // Vẫn dùng id của bảng đăng ký
                     const svName = dk.ho_ten || dk.ten_sinh_vien || dk.ma_sv || 'SV';
                     const dtName = dk.ten_dt || dk.ten_de_tai || dk.ma_dt || 'Đề tài';
                     return `<option value="${id}">${svName} - ${dtName}</option>`;
@@ -139,8 +139,9 @@ document.addEventListener('DOMContentLoaded', () => {
             e.preventDefault();
             const originalText = `<i class="bi bi-check-circle me-1"></i> Xác Nhận Đăng Ký`;
 
-            const svId = parseInt(document.getElementById('dk_sinhvien_id').value);
-            const dtId = parseInt(document.getElementById('dk_detai_id').value);
+            // BỎ parseInt vì masv và madt là CHUỖI
+            const svId = document.getElementById('dk_masv').value; 
+            const dtId = document.getElementById('dk_madt').value;
 
             if (!svId || !dtId) {
                 showAlert('Vui lòng chọn đầy đủ Sinh viên và Đề tài!', true);
@@ -155,7 +156,8 @@ document.addEventListener('DOMContentLoaded', () => {
                 const res = await fetch(`${API_BASE}/dang-ky-de-tai`, {
                     method: 'POST',
                     headers: { 'Content-Type': 'application/json', 'Accept': 'application/json' },
-                    body: JSON.stringify({ sinhvien_id: svId, detai_id: dtId })
+                    // Đổi payload thành masv và madt cho chuẩn SOA
+                    body: JSON.stringify({ masv: svId, madt: dtId }) 
                 });
                 const data = await res.json();
 
@@ -182,7 +184,8 @@ document.addEventListener('DOMContentLoaded', () => {
             const originalText = `<i class="bi bi-star me-1"></i> Cập Nhật Điểm`;
 
             const dkIdRaw = document.getElementById('nd_dang_ky_id').value;
-            const dkId = parseInt(dkIdRaw);
+            // Ở đây vẫn dùng parseInt vì dang_ky_id (khóa chính bảng dangki) vẫn là ID tự tăng
+            const dkId = parseInt(dkIdRaw); 
             const diemVal = parseFloat(document.getElementById('nd_diem').value);
 
             if (!dkIdRaw || isNaN(dkId)) {

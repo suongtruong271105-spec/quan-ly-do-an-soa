@@ -25,13 +25,13 @@
 
             <input
                 type="text"
-                id="ma_sv"
+                id="masv"
                 placeholder="Mã sinh viên"
             >
 
             <input
                 type="text"
-                id="ho_ten"
+                id="hoten"
                 placeholder="Họ tên"
             >
 
@@ -56,7 +56,6 @@
 
             <thead>
                 <tr>
-                    <th>ID</th>
                     <th>Mã SV</th>
                     <th>Họ tên</th>
                     <th>Lớp</th>
