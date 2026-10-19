@@ -23,9 +23,10 @@ Route::get('/dashboard/bao-cao', [DashboardController::class, 'getBaoCaoTongHop'
 
 
 Route::post('/dang-ky-de-tai', [DangKyController::class, 'store']);
-Route::put('/dang-ky-de-tai/nhap-diem', [DangKyController::class, 'nhapDiem']);
-Route::get('/de-tai', [DeTaiController::class, 'index']);          
-Route::get('/de-tai/{madt}', [DeTaiController::class, 'show']);    
-Route::post('/de-tai', [DeTaiController::class, 'store']);         
-Route::put('/de-tai/{madt}', [DeTaiController::class, 'update']);     
+
+
+Route::get('/de-tai', [DeTaiController::class, 'index']);
+Route::get('/de-tai/{madt}', [DeTaiController::class, 'show']);
+Route::post('/de-tai', [DeTaiController::class, 'store']);
+Route::put('/de-tai/{madt}', [DeTaiController::class, 'update']);
 Route::delete('/de-tai/{madt}', [DeTaiController::class, 'destroy']);

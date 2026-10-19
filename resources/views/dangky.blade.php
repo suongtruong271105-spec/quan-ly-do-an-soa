@@ -3,7 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <title>Đăng Ký & Chấm Điểm</title>
+    <title>Đăng Ký Đề Tài</title>
 
     <link href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
     <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
@@ -34,7 +34,7 @@
                     <a class="nav-link" href="/de-tai"><i class="bi bi-journal-text me-1"></i> Quản lý Đề Tài</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link active" href="/dang-ky"><i class="bi bi-check2-square me-1"></i> Đăng Ký & Chấm Điểm</a>
+                    <a class="nav-link active" href="/dang-ky"><i class="bi bi-check2-square me-1"></i> Đăng Ký Đề Tài</a>
                 </li>
             </ul>
         </div>
@@ -44,8 +44,8 @@
 <!-- Header Section -->
 <div class="header-section">
     <div class="container">
-        <h3 class="fw-bold mb-1"><i class="bi bi-pencil-square me-2"></i>Quản Lý Đăng Ký & Chấm Điểm</h3>
-        <p class="mb-0 opacity-75 small">Thực hiện đăng ký đề tài đồ án và nhập điểm xếp loại cho sinh viên</p>
+        <h3 class="fw-bold mb-1"><i class="bi bi-pencil-square me-2"></i>Quản Lý Đăng Ký Đề Tài</h3>
+        <p class="mb-0 opacity-75 small">Thực hiện đăng ký đề tài đồ án cho sinh viên</p>
     </div>
 </div>
 
@@ -58,9 +58,9 @@
         <button type="button" class="btn-close" onclick="hideAlert()"></button>
     </div>
 
-    <div class="row g-4">
+    <div class="row g-4 justify-content-center">
         <!-- Form 1: Đăng Ký Đề Tài -->
-        <div class="col-md-6">
+        <div class="col-12 col-md-8 col-lg-6">
             <div class="form-card">
                 <div class="form-card-header">
                     <i class="bi bi-journal-plus text-primary fs-5 me-2"></i>
@@ -86,33 +86,6 @@
                     <i class="bi bi-check-circle me-1"></i> Xác Nhận Đăng Ký
                 </button>
             </form>
-                </div>
-            </div>
-        </div>
-
-        <!-- Form 2: Chấm Điểm Đồ Án -->
-        <div class="col-md-6">
-            <div class="form-card">
-                <div class="form-card-header">
-                    <i class="bi bi-award text-warning fs-5 me-2"></i>
-                    <h6 class="fw-bold text-dark mb-0">2. CHẤM ĐIỂM ĐỒ ÁN</h6>
-                </div>
-                <div class="form-card-body">
-                    <form id="formNhapDiem">
-                        <div class="mb-3">
-                            <label for="nd_dang_ky_id" class="form-label text-secondary small fw-semibold">Sinh Viên & Đề tài</label>
-                            <select id="nd_dang_ky_id" class="form-select form-input-custom" required>
-                                <option value="">-- Đang tải danh sách đăng ký... --</option>
-                            </select>
-                        </div>
-                        <div class="mb-4">
-                            <label for="nd_diem" class="form-label text-secondary small fw-semibold">Điểm Số (Thang 10)</label>
-                            <input type="number" step="0.1" min="0" max="10" id="nd_diem" class="form-input-custom" placeholder="VD: 8.5" required>
-                        </div>
-                        <button type="submit" id="btnNhapDiem" class="btn btn-warning-custom w-100">
-                            <i class="bi bi-star me-1"></i> Cập Nhật Điểm
-                        </button>
-                    </form>
                 </div>
             </div>
         </div>
