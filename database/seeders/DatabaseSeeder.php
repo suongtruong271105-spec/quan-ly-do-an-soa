@@ -11,24 +11,21 @@ class DatabaseSeeder extends Seeder
 {
     public function run(): void
     {
-        // 1. Tạo thủ công 2 sinh viên vào DB sinh viên
-        SinhVien::create([
-            'masv' => 'SV001', 'hoten' => 'Nguyễn Văn A', 'ngaysinh' => '2003-01-01', 'lop' => 'KTPM', 'email' => 'a@gmail.com'
-        ]);
-        SinhVien::create([
-            'masv' => 'SV002', 'hoten' => 'Trần Thị B', 'ngaysinh' => '2003-02-02', 'lop' => 'HTTT', 'email' => 'b@gmail.com'
-        ]);
+        // 1. Tự động tạo 10 Sinh viên sử dụng Factory
+        $sinhViens = SinhVien::factory(10)->create();
 
-        // 2. Tạo thủ công 2 đề tài vào DB đề tài
-        DeTai::create([
-            'madt' => 'DT001', 'tendt' => 'Xây dựng web SOA', 'giangvien' => 'Cô giáo X', 'soluong_toida' => 2
-        ]);
-        DeTai::create([
-            'madt' => 'DT002', 'tendt' => 'Nhận diện khuôn mặt', 'giangvien' => 'Thầy giáo Y', 'soluong_toida' => 1
-        ]);
+        // 2. Tự động tạo 10 Đề tài sử dụng Factory
+        $deTais = DeTai::factory(10)->create();
 
-        // 3. Tạo dữ liệu đăng ký vào DB đăng ký
-        DangKi::create(['masv' => 'SV001', 'madt' => 'DT001', 'trangthai' => 'Da Duyet']);
-        DangKi::create(['masv' => 'SV002', 'madt' => 'DT002', 'trangthai' => 'Cho Duyet']);
+        // 3. Tự động tạo các lượt đăng ký tương ứng (ví dụ: mỗi sinh viên đăng ký 1 đề tài ngẫu nhiên)
+        foreach ($sinhViens as $index => $sv) {
+            $dt = $deTais[$index % count($deTais)]; // Lấy xoay vòng đề tài cho sinh viên
+            
+            DangKi::create([
+                'masv' => $sv->masv,
+                'madt' => $dt->madt,
+                'trangthai' => $index % 2 == 0 ? 'Da Duyet' : 'Cho Duyet',
+            ]);
+        }
     }
 }

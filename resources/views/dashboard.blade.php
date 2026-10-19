@@ -84,7 +84,6 @@
         .bg-blue-light { background-color: #eff6ff; color: #2563eb; }
         .bg-teal-light { background-color: #f0fdf4; color: #16a34a; }
         .bg-orange-light { background-color: #fff7ed; color: #ea580c; }
-        .bg-purple-light { background-color: #faf5ff; color: #9333ea; }
 
         .stat-info { display: flex; flex-direction: column; }
         .stat-label { color: var(--text-muted); font-size: 0.8rem; font-weight: 600; text-transform: uppercase; letter-spacing: 0.5px; }
@@ -97,7 +96,7 @@
             box-shadow: 0 4px 6px -1px rgba(0,0,0,0.05);
             border: 1px solid #e2e8f0;
             overflow: hidden;
-            margin-top: 2rem; /* Tạo khoảng cách đẹp với hàng thống kê */
+            margin-top: 2rem;
         }
         .table-header { padding: 1.25rem 1.5rem; border-bottom: 1px solid #e2e8f0; background-color: #ffffff; }
         .table thead th { 
@@ -107,15 +106,6 @@
         .table tbody td { padding: 1rem 1.5rem; vertical-align: middle; border-bottom: 1px solid #f1f5f9; color: #475569; }
         .table tbody tr:hover { background-color: #f8fafc; }
         .topic-text { color: var(--blue-navy); font-weight: 500; }
-        
-        .btn-sync {
-            background-color: rgba(255,255,255,0.15);
-            color: white;
-            border: 1px solid rgba(255,255,255,0.3);
-            font-weight: 500;
-            transition: 0.3s;
-        }
-        .btn-sync:hover { background-color: white; color: var(--blue-navy); }
     </style>
 </head>
 <body>
@@ -130,7 +120,6 @@
             <span class="navbar-toggler-icon"></span>
         </button>
         <div class="collapse navbar-collapse" id="navbarNav">
-            <!-- Đẩy các menu sang góc phải bằng ms-auto -->
             <ul class="navbar-nav ms-auto">
                 <li class="nav-item">
                     <a class="nav-link active" href="/dashboard"><i class="bi bi-speedometer2 me-1"></i> Dashboard</a>
@@ -142,7 +131,7 @@
                     <a class="nav-link" href="/de-tai"><i class="bi bi-journal-text me-1"></i> Quản lý Đề Tài</a>
                 </li>
                 <li class="nav-item">
-                    <a class="nav-link" href="/dang-ky"><i class="bi bi-check2-square me-1"></i> Đăng Ký & Chấm Điểm</a>
+                    <a class="nav-link" href="/dang-ky"><i class="bi bi-check2-square me-1"></i> Quản lý Đăng Ký</a>
                 </li>
             </ul>
         </div>
@@ -150,21 +139,18 @@
 </nav>
 
 <div class="header-section">
-    <div class="container d-flex justify-content-between align-items-center">
+    <div class="container">
         <div>
-            <h3 class="fw-bold mb-1">Cổng Thông Tin Đồ Án </h3>
-            <p class="mb-0 opacity-75 small">Bảng điều khiển tổng hợp dữ liệu </p>
+            <h3 class="fw-bold mb-1">Cổng Thông Tin Đồ Án</h3>
+            <p class="mb-0 opacity-75 small">Bảng điều khiển tổng hợp dữ liệu</p>
         </div>
-        <button class="btn btn-sync px-3 py-2 rounded-2" onclick="loadDashboardData()">
-            <i class="bi bi-arrow-clockwise me-2"></i>Làm mới bảng
-        </button>
     </div>
 </div>
 
 <div class="container dashboard-content mb-5">
-    <!-- Hàng thống kê -->
+    <!-- Hàng thống kê (Chia đều 3 thẻ) -->
     <div class="row g-4">
-        <div class="col-xl-3 col-md-6">
+        <div class="col-lg-4 col-md-6">
             <div class="stat-card">
                 <div class="icon-circle bg-blue-light"><i class="bi bi-people-fill"></i></div>
                 <div class="stat-info">
@@ -173,7 +159,7 @@
                 </div>
             </div>
         </div>
-        <div class="col-xl-3 col-md-6">
+        <div class="col-lg-4 col-md-6">
             <div class="stat-card">
                 <div class="icon-circle bg-teal-light"><i class="bi bi-journal-bookmark-fill"></i></div>
                 <div class="stat-info">
@@ -182,21 +168,12 @@
                 </div>
             </div>
         </div>
-        <div class="col-xl-3 col-md-6">
+        <div class="col-lg-4 col-md-6">
             <div class="stat-card">
                 <div class="icon-circle bg-orange-light"><i class="bi bi-ui-checks"></i></div>
                 <div class="stat-info">
                     <span class="stat-label">Lượt Đăng Ký</span>
                     <span class="stat-value" id="stat-dk">0</span>
-                </div>
-            </div>
-        </div>
-        <div class="col-xl-3 col-md-6">
-            <div class="stat-card">
-                <div class="icon-circle bg-purple-light"><i class="bi bi-award-fill"></i></div>
-                <div class="stat-info">
-                    <span class="stat-label">Đã Có Điểm</span>
-                    <span class="stat-value" id="stat-cham-diem">0</span>
                 </div>
             </div>
         </div>
@@ -213,16 +190,15 @@
                 <thead>
                     <tr>
                         <th class="text-center" width="5%">STT</th>
-                        <th width="12%">Mã SV</th>
-                        <th width="20%">Họ và Tên</th>
-                        <th width="10%">Lớp</th>
-                        <th width="33%">Tên Đề Tài</th>
+                        <th width="15%">Mã SV</th>
+                        <th width="22%">Họ và Tên</th>
+                        <th width="12%">Lớp</th>
+                        <th width="31%">Tên Đề Tài</th>
                         <th width="15%">Giảng Viên HD</th>
-                        <th class="text-center" width="5%">Điểm</th>
                     </tr>
                 </thead>
                 <tbody id="reportTableBody">
-                    <tr><td colspan="7" class="text-center py-5 text-muted">Đang tải dữ liệu từ máy chủ API...</td></tr>
+                    <tr><td colspan="6" class="text-center py-5 text-muted">Đang tải dữ liệu từ máy chủ API...</td></tr>
                 </tbody>
             </table>
         </div>
@@ -240,23 +216,14 @@
                 document.getElementById('stat-sv').textContent = result.summary.tong_sinh_vien;
                 document.getElementById('stat-dt').textContent = result.summary.tong_de_tai;
                 document.getElementById('stat-dk').textContent = result.summary.tong_dang_ky;
-                document.getElementById('stat-cham-diem').textContent = result.summary.da_cham_diem;
 
                 if (result.data.length === 0) {
-                    tableBody.innerHTML = '<tr><td colspan="7" class="text-center py-5 text-muted">Chưa có sinh viên nào đăng ký đề tài.</td></tr>';
+                    tableBody.innerHTML = '<tr><td colspan="6" class="text-center py-5 text-muted">Chưa có sinh viên nào đăng ký đề tài.</td></tr>';
                     return;
                 }
 
                 let html = '';
                 result.data.forEach((row, index) => {
-                    let diemBadge = '<span class="badge bg-light text-secondary border px-2 py-1">Chưa chấm</span>';
-                    if (row.diem !== null) {
-                        const diem = parseFloat(row.diem);
-                        if (diem >= 8.5) diemBadge = `<span class="badge bg-success px-2 py-1 fs-6">${diem.toFixed(1)}</span>`;
-                        else if (diem >= 7.0) diemBadge = `<span class="badge bg-primary px-2 py-1 fs-6">${diem.toFixed(1)}</span>`;
-                        else diemBadge = `<span class="badge bg-warning text-dark px-2 py-1 fs-6">${diem.toFixed(1)}</span>`;
-                    }
-
                     html += `
                         <tr>
                             <td class="text-center text-muted">${index + 1}</td>
@@ -265,14 +232,13 @@
                             <td><span class="badge bg-light text-dark border px-2">${row.lop}</span></td>
                             <td class="topic-text">${row.ten_de_tai}</td>
                             <td>${row.giang_vien_huong_dan}</td>
-                            <td class="text-center">${diemBadge}</td>
                         </tr>
                     `;
                 });
                 tableBody.innerHTML = html;
             }
         } catch (error) {
-            tableBody.innerHTML = '<tr><td colspan="7" class="text-center py-5 text-danger fw-bold">Lỗi kết nối đến máy chủ API!</td></tr>';
+            tableBody.innerHTML = '<tr><td colspan="6" class="text-center py-5 text-danger fw-bold">Lỗi kết nối đến máy chủ API!</td></tr>';
         }
     }
 

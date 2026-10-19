@@ -1,9 +1,11 @@
 <?php
 namespace App\Models;
+use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
 class SinhVien extends Model
 {
+    use HasFactory;
     // Tên connection phải khớp với tên bạn đã khai báo trong config/database.php
     protected $connection = 'sinhvien_conn'; 
     protected $table = 'sinhvien';
