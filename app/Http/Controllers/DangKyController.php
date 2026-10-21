@@ -2,26 +2,24 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\DangKi; // Chú ý tên Model DangKi (viết i ngắn theo file của bạn)
-use App\Models\SinhVien;
-use App\Models\DeTai;
+use App\Models\DangKi;
 use Illuminate\Http\Request;
-use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Validator;
 
 class DangKyController extends Controller
 {
     /**
-     * Xử lý API sinh viên đăng ký đề tài chuẩn SOA
+     * Xử lý API sinh viên đăng ký đề tài
      */
     public function store(Request $request)
     {
-        // Bước 1: Chỉ Validate định dạng đầu vào (Không dùng 'exists' nối bảng ở đây nữa)
+        // 1. Validate dữ liệu đầu vào
         $validator = Validator::make($request->all(), [
+            'masv' => 'required',
             'madt' => 'required',
-            'masv' => 'nullable',
         ], [
+            'masv.required' => 'Vui lòng truyền mã sinh viên.',
             'madt.required' => 'Vui lòng chọn đề tài muốn đăng ký.',
         ]);
 
@@ -33,41 +31,34 @@ class DangKyController extends Controller
             ], 422);
         }
 
-        // Lấy mã sinh viên từ Request hoặc Auth
-        $sinhVienId = Auth::check() ? Auth::user()->masv : $request->masv;
-        $detaiId = $request->madt;
+        $sinhVienId = $request->masv;
+        $detaiId    = $request->madt;
 
-        if (!$sinhVienId) {
+
+        $reqSV = Request::create("/api/sinhvien/{$sinhVienId}", 'GET');
+        $resSV = app()->handle($reqSV);
+
+        if (!$resSV->isSuccessful()) {
             return response()->json([
                 'success' => false,
-                'message' => 'Thiếu thông tin sinh viên (vui lòng truyền masv trong body hoặc thực hiện đăng nhập).'
-            ], 400);
-        }
-
-        // =====================================================================
-        // BƯỚC 2: GIAO TIẾP SOA CHÉO SERVICE (THAY THẾ CHO FOREIGN KEY/EXISTS)
-        // Service Đăng ký "hỏi" Service Sinh Viên xem có mã này không
-        $sinhVienHopLe = SinhVien::where('masv', $sinhVienId)->exists();
-        if (!$sinhVienHopLe) {
-            return response()->json([
-                'success' => false,
-                'message' => 'Sinh viên không tồn tại trong hệ thống (Dữ liệu từ Student Service).'
+                'message' => 'Sinh viên không tồn tại trong hệ thống.'
             ], 404);
         }
 
-        // Service Đăng ký "hỏi" Service Đề Tài xem có mã này không
-        $deTaiHopLe = DeTai::where('madt', $detaiId)->exists();
-        if (!$deTaiHopLe) {
+
+        $reqDT = Request::create("/api/de-tai/{$detaiId}", 'GET');
+        $resDT = app()->handle($reqDT);
+
+        if (!$resDT->isSuccessful()) {
             return response()->json([
                 'success' => false,
-                'message' => 'Đề tài được chọn không tồn tại (Dữ liệu từ Topic Service).'
+                'message' => 'Đề tài không tồn tại trong hệ thống.'
             ], 404);
         }
-        // =====================================================================
 
-        // Bước 3: Kiểm tra logic nghiệp vụ tại Local Service (DangKi)
+
+        // 2. Kiểm tra sinh viên đã đăng ký chưa
         $daDangKy = DangKi::where('masv', $sinhVienId)->exists();
-
         if ($daDangKy) {
             return response()->json([
                 'success' => false,
@@ -75,9 +66,9 @@ class DangKyController extends Controller
             ], 400);
         }
 
-        // Bước 4: Lưu dữ liệu
+        // 3. Lưu dữ liệu
         try {
-            DB::connection('dangky_conn')->beginTransaction(); // Bắt buộc dùng đúng connection
+            DB::connection('dangky_conn')->beginTransaction();
 
             $dangKy = DangKi::create([
                 'masv'      => $sinhVienId,
