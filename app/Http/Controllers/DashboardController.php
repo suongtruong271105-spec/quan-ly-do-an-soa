@@ -3,61 +3,70 @@
 namespace App\Http\Controllers;
 
 use App\Models\DangKi;
-use App\Models\SinhVien;
-use App\Models\DeTai;
 use Illuminate\Http\Request;
 
 class DashboardController extends Controller
 {
-    // 1. Khai báo API tổng hợp báo cáo (Chuẩn SOA)
+    // 1. Lấy báo cáo tổng hợp thông qua API nội bộ (Chạy an toàn trên 1 cổng)
     public function getBaoCaoTongHop()
     {
         try {
-            // Bước 1: Lấy toàn bộ lượt đăng ký từ Service Đăng Ký
             $dangkis = DangKi::all();
 
-            // Lấy danh sách các mã SV và mã Đề tài để tối ưu hóa truy vấn
-            $listMaSV = $dangkis->pluck('masv')->unique()->toArray();
-            $listMaDT = $dangkis->pluck('madt')->unique()->toArray();
+            // Lấy danh sách Sinh Viên từ API
+            $reqSV = Request::create('/api/sinhvien', 'GET');
+            $resSV = app()->handle($reqSV);
+            if ($resSV->isSuccessful()) {
+                $rawSV = json_decode($resSV->getContent(), true);
+                $svArray = isset($rawSV['data']) ? $rawSV['data'] : $rawSV;
+                $sinhviens = collect($svArray)->keyBy('masv');
+            } else {
+                $sinhviens = collect();
+            }
 
-            // Bước 2: Truy vấn độc lập sang Service Sinh Viên và Service Đề Tài
-            $sinhviens = SinhVien::whereIn('masv', $listMaSV)->get()->keyBy('masv');
-            $detais = DeTai::whereIn('madt', $listMaDT)->get()->keyBy('madt');
+            // Lấy danh sách Đề Tài từ API
+            $reqDT = Request::create('/api/de-tai', 'GET');
+            $resDT = app()->handle($reqDT);
+            if ($resDT->isSuccessful()) {
+                $rawDT = json_decode($resDT->getContent(), true);
+                $dtArray = isset($rawDT['data']) ? $rawDT['data'] : $rawDT;
+                $detais = collect($dtArray)->keyBy('madt');
+            } else {
+                $detais = collect();
+            }
 
-            // Bước 3: Lắp ráp (Map) dữ liệu bằng PHP để thay thế cho lệnh JOIN SQL
-         $data = $dangkis->map(function ($dk) use ($sinhviens, $detais) {
-        $sv = isset($sinhviens[$dk->masv]) ? $sinhviens[$dk->masv] : null;
-        $dt = isset($detais[$dk->madt]) ? $detais[$dk->madt] : null;
+            // Map thông tin đăng ký với dữ liệu sinh viên và đề tài
+            $data = $dangkis->map(function ($dk) use ($sinhviens, $detais) {
+                $sv = $sinhviens->get($dk->masv);
+                $dt = $detais->get($dk->madt);
 
-        return [
-            'sinhvien_id'          => $dk->masv,
-            'ma_sv'                => $dk->masv,
-            'ten_sinh_vien'        => $sv ? $sv->hoten : 'Dữ liệu bị xóa',
-            'lop'                  => $sv ? $sv->lop : '',
-            'detai_id'             => $dk->madt,
-            'ten_de_tai'           => $dt ? $dt->tendt : 'Dữ liệu bị xóa',
-            'giang_vien_huong_dan' => $dt ? $dt->giangvien : '',
-            'dang_ky_id'           => $dk->id,
-            'ngay_dang_ky'         => $dk->created_at,
-            'diem'                 => $dk->diem ?? null 
-        ];
-    })
-    ->filter(function ($item) {
-        // CHỈ GIỮ LẠI những dòng có đầy đủ thông tin (loại bỏ các dòng có chữ "Dữ liệu bị xóa")
-        return $item['ten_sinh_vien'] !== 'Dữ liệu bị xóa' && $item['ten_de_tai'] !== 'Dữ liệu bị xóa';
-    })
-    ->sortBy('ma_sv')->values();
-            // Bước 4: Lấy dữ liệu thống kê tổng quan (truy vấn độc lập trên từng Model)
+                return [
+                    'sinhvien_id'          => $dk->masv,
+                    'ma_sv'                => $dk->masv,
+                    'ten_sinh_vien'        => $sv ? ($sv['hoten'] ?? 'Không rõ') : 'Dữ liệu bị xóa',
+                    'lop'                  => $sv ? ($sv['lop'] ?? '') : '',
+                    'detai_id'             => $dk->madt,
+                    'ten_de_tai'           => $dt ? ($dt['tendt'] ?? 'Không rõ') : 'Dữ liệu bị xóa',
+                    'giang_vien_huong_dan' => $dt ? ($dt['giangvien'] ?? '') : '',
+                    'dang_ky_id'           => $dk->id ?? 0,
+                    'ngay_dang_ky'         => $dk->created_at ?? now(),
+                ];
+            })
+            ->filter(function ($item) {
+
+                return $item['ten_sinh_vien'] !== 'Dữ liệu bị xóa';
+            })
+            ->sortBy('ma_sv')->values();
+
             $thongKe = [
-                'tong_sinh_vien' => SinhVien::count(),
-                'tong_de_tai'    => DeTai::count(),
-                'tong_dang_ky'   => DangKi::count(),
-                'da_cham_diem'   => DangKi::whereNotNull('diem')->count(),
+                'tong_sinh_vien' => $sinhviens->count(),
+                'tong_de_tai'    => $detais->count(),
+                'tong_dang_ky'   => $data->count(),
             ];
 
             return response()->json([
                 'status'  => 'success',
-                'message' => 'Lấy báo cáo thành công (Kiến trúc SOA)',
+                'message' => 'Lấy báo cáo thành công',
                 'summary' => $thongKe,
                 'data'    => $data
             ], 200);
@@ -65,12 +74,12 @@ class DashboardController extends Controller
         } catch (\Exception $e) {
             return response()->json([
                 'status'  => 'error',
-                'message' => 'Lỗi xử lý: ' . $e->getMessage()
+                'message' => 'Lỗi xử lý dữ liệu: ' . $e->getMessage()
             ], 500);
         }
     }
 
-    // 2. Trả về giao diện Web 
+    // 2. Trả về giao diện Dashboard
     public function index()
     {
         return view('dashboard');
